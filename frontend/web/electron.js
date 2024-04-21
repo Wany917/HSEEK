@@ -1,8 +1,9 @@
-import { app, BrowserWindow } from 'electron';
-import path from 'path';
-import isDev from 'electron-is-dev';
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
 
-function createWindow() {
+async function createWindow() {
+  const isDev = await import('electron-is-dev'); // Importation dynamique
+
   // Créer la fenêtre du navigateur.
   const win = new BrowserWindow({
     width: 800,
@@ -15,19 +16,20 @@ function createWindow() {
   });
 
   // Charger l'URL du serveur de développement Vite ou le fichier build pour la production
-  const url = isDev ? 'http://localhost:5173' : `file://${path.join(process.cwd(), 'dist/index.html')}`;
+  const url = isDev.default ? 'http://localhost:3032' : `file://${path.join(process.cwd(), 'dist/index.html')}`;
   win.loadURL(url);
 }
 
-app.whenReady().then(() => {
-  createWindow()
-  
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
+app.whenReady().then(createWindow);
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit()
-})
-
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
