@@ -182,8 +182,8 @@ export default function HomeHero() {
             textAlign: 'center',
           }}
         >
-          Start a <br />
-          New Project with
+          Be safer <br />
+          with
         </Typography>
       </m.div>
 
@@ -197,14 +197,13 @@ export default function HomeHero() {
             repeat: Infinity,
           }}
         >
-          Minimal
+          Hollowseek
         </StyledTextGradient>
       </m.div>
 
       <m.div variants={varFade().in}>
         <Typography variant="body2" sx={{ textAlign: 'center' }}>
-          The starting point for your next project is based on MUI.Easy customization Helps you
-          build apps faster and better.
+          Keep your pc safe with our scanning and analyzing tool.
         </Typography>
       </m.div>
 
@@ -240,7 +239,7 @@ export default function HomeHero() {
               Live Preview
             </Button>
 
-            <Link
+            {/* <Link
               color="inherit"
               variant="caption"
               target="_blank"
@@ -254,7 +253,7 @@ export default function HomeHero() {
             >
               <Iconify icon="eva:external-link-fill" width={16} sx={{ mr: 0.5 }} />
               Get Free Version
-            </Link>
+            </Link> */}
           </Stack>
 
           <Button
@@ -272,7 +271,7 @@ export default function HomeHero() {
         </Stack>
       </m.div>
 
-      <Stack spacing={3} sx={{ textAlign: 'center' }}>
+      {/* <Stack spacing={3} sx={{ textAlign: 'center' }}>
         <m.div variants={varFade().in}>
           <Typography variant="overline" sx={{ opacity: 0.48 }}>
             Available For
@@ -291,7 +290,7 @@ export default function HomeHero() {
             </m.div>
           ))}
         </Stack>
-      </Stack>
+      </Stack> */}
     </Stack>
   );
 

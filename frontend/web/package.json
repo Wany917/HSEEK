@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3032 --turbo",
-    "dev:electron": "concurrently \"pnpm run dev\" \"wait-on http://localhost:3032 && pnpm run electron\" --kill-others --success first",
+    "dev:electron": "concurrently \"npm run dev\" \"wait-on http://localhost:3032 && npm run electron\" --kill-others --success first",
     "start": "next start -p 3032",
     "build": "next build",
     "electron": "electron ./electron.js",
