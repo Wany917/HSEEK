@@ -207,7 +207,7 @@ export default function HomeHero() {
         </Typography>
       </m.div>
 
-      <m.div variants={varFade().in}>
+      {/* <m.div variants={varFade().in}>
         <Stack
           spacing={0.75}
           direction="row"
@@ -223,9 +223,9 @@ export default function HomeHero() {
             (99+ reviews)
           </Typography>
         </Stack>
-      </m.div>
+      </m.div> */}
 
-      <m.div variants={varFade().in}>
+      {/* <m.div variants={varFade().in}>
         <Stack spacing={1.5} direction={{ xs: 'column-reverse', sm: 'row' }} sx={{ mb: 5 }}>
           <Stack alignItems="center" spacing={2}>
             <Button
@@ -239,7 +239,7 @@ export default function HomeHero() {
               Live Preview
             </Button>
 
-            {/* <Link
+            {<Link
               color="inherit"
               variant="caption"
               target="_blank"
@@ -253,7 +253,7 @@ export default function HomeHero() {
             >
               <Iconify icon="eva:external-link-fill" width={16} sx={{ mr: 0.5 }} />
               Get Free Version
-            </Link> */}
+            </Link>}
           </Stack>
 
           <Button
@@ -269,7 +269,7 @@ export default function HomeHero() {
             Design Preview
           </Button>
         </Stack>
-      </m.div>
+      </m.div> */}
 
       {/* <Stack spacing={3} sx={{ textAlign: 'center' }}>
         <m.div variants={varFade().in}>
