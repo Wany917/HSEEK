@@ -1,5 +1,5 @@
-import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { DateTime } from 'luxon'
 
 export default class Invoice extends BaseModel {
   @column({ isPrimary: true })
@@ -20,14 +20,11 @@ export default class Invoice extends BaseModel {
   @column()
   declare unitPrice: number
 
-  @column()
-  declare totalPrice: string
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true })
-  declare dueAt: DateTime
+  @column()
+  declare dueAt: Date
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
