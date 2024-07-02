@@ -16,3 +16,7 @@ router.get('/', async () => {
   }
 })
 router.post('/invoice', [InvoicesController, 'createInvoice'])
+router.get('/invoice', [InvoicesController, 'getAllInvoices'])
+router.get('/invoice/:id', [InvoicesController, 'getInvoiceById'])
+router.delete('/invoice/:id', [InvoicesController, 'deleteInvoice'])
+router.put('/invoice/:id', [InvoicesController, 'updateInvoice'])
