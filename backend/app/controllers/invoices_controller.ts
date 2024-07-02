@@ -1,8 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { createInvoiceValidator } from '#validators/create_invoice'
-import { getInvoiceValidator } from '#validators/get_invoice'
-import { deleteInvoiceValidator } from '#validators/delete_invoice'
-import { updateInvoiceValidator } from '#validators/update_invoice'
+import { createInvoiceValidator } from '#validators/invoices/create_invoice'
+import { getInvoiceValidator } from '#validators/invoices/get_invoice'
+import { deleteInvoiceValidator } from '#validators/invoices/delete_invoice'
+import { updateInvoiceValidator } from '#validators/invoices/update_invoice'
 import Invoice from '#models/invoice'
 
 export default class InvoicesController {
