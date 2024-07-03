@@ -25,6 +25,7 @@ import { navConfig } from './config-navigation';
 import LoginButton from '../common/login-button';
 import HeaderShadow from '../common/header-shadow';
 import SettingsButton from '../common/settings-button';
+import RegisterButton from '../common/register-button';
 
 // ----------------------------------------------------------------------
 
@@ -85,13 +86,13 @@ export default function Header() {
 
           <Box sx={{ flexGrow: 1 }} />
 
-          {mdUp && <NavDesktop data={navConfig} />}
+          {/* {mdUp && <NavDesktop data={navConfig} />} */}
 
           <Stack alignItems="center" direction={{ xs: 'row', md: 'row-reverse' }}>
-            <Button variant="contained" target="_blank" rel="noopener" href={paths.minimalUI}>
+            {/* <Button variant="contained" target="_blank" rel="noopener" href={paths.minimalUI}>
               Purchase Now
-            </Button>
-
+            </Button> */}
+            {mdUp && <RegisterButton />}
             {mdUp && <LoginButton />}
 
             <SettingsButton
@@ -101,7 +102,7 @@ export default function Header() {
               }}
             />
 
-            {!mdUp && <NavMobile data={navConfig} />}
+            {/* {!mdUp && <NavMobile data={navConfig} />} */}
           </Stack>
         </Container>
       </Toolbar>

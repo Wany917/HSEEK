@@ -408,7 +408,7 @@ export default function HomeHero() {
                 {renderDescription}
               </Grid>
 
-              {mdUp && <Grid md={6}>{renderSlides}</Grid>}
+              {/* {mdUp && <Grid md={6}>{renderSlides}</Grid>} */}
             </Grid>
           </Container>
 
