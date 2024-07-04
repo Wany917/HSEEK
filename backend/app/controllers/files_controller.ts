@@ -1,14 +1,14 @@
 import File from '#models/file'
-import { HttpContext } from '@adonisjs/core/http';
+import { HttpContext } from '@adonisjs/core/http'
 import { uploadValidator, validateFile } from '#validators/upload'
 import { cuid } from '@adonisjs/core/build/standalone/helpers'
 
 export default class FilesController {
-  public async uploadFile({ request, response }: HttpContext) {
-    const payload = await request.validate(uploadValidator);
+  async uploadFile({ request, response }: HttpContext) {
+    const payload = await request.validate(uploadValidator)
     const file = request.file('file', {
       size: '2mb',
-      extnames: ['jpg', 'png', 'txt', 'pdf']
+      extnames: ['jpg', 'png', 'txt', 'pdf'],
     })
 
     if (!file || !file.isValid) {
@@ -16,15 +16,15 @@ export default class FilesController {
     }
 
     try {
-      validateFile(file); // Utilisez la fonction de validation personnalisée pour des vérifications supplémentaires
+      validateFile(file) // Utilisez la fonction de validation personnalisée pour des vérifications supplémentaires
     } catch (error) {
-      return response.badRequest(error.message);
+      return response.badRequest(error.message)
     }
 
     const fileName = `${cuid()}.${file.extname}`
 
     await file.move(Application.tmpPath('uploads'), {
-      name: fileName
+      name: fileName,
     })
 
     const newFile = await File.create({
