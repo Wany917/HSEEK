@@ -60,19 +60,19 @@ export default function HomeView() {
           bgcolor: 'background.default',
         }}
       >
-        <HomeMinimal />
+        {/* <HomeMinimal /> */}
 
-        <HomeHugePackElements />
+        {/* <HomeHugePackElements /> */}
 
-        <Box sx={{ position: 'relative' }}>
+        {/* <Box sx={{ position: 'relative' }}>
           <StyledPolygon />
           <HomeForDesigner />
           <StyledPolygon anchor="bottom" />
-        </Box>
+        </Box> */}
 
-        <HomeDarkMode />
+        {/* <HomeDarkMode /> */}
 
-        <HomeColorPresets />
+        {/* <HomeColorPresets />
 
         <HomeCleanInterfaces />
 
@@ -80,7 +80,7 @@ export default function HomeView() {
 
         <HomeLookingFor />
 
-        <HomeAdvertisement />
+        <HomeAdvertisement /> */}
       </Box>
     </MainLayout>
   );
