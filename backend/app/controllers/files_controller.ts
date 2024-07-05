@@ -1,39 +1,65 @@
-import File from '#models/file'
-import { HttpContext } from '@adonisjs/core/http'
-import { uploadValidator, validateFile } from '#validators/upload'
-import { cuid } from '@adonisjs/core/build/standalone/helpers'
+import type { HttpContext } from '@adonisjs/core/http'
+import fs from 'fs'
+import app from '@adonisjs/core/services/app'
+import { uploadFileValidator } from '#validators/file'
 
 export default class FilesController {
-  async uploadFile({ request, response }: HttpContext) {
-    const payload = await request.validate(uploadValidator)
-    const file = request.file('file', {
-      size: '2mb',
-      extnames: ['jpg', 'png', 'txt', 'pdf'],
-    })
+  async upload({ auth, request, response }: HttpContext) {
+    const user = auth.user!
+    const { files, path } = await request.validateUsing(uploadFileValidator)
+    const userDir = app.makePath('data', user.id.toString(), path || '')
 
-    if (!file || !file.isValid) {
-      return response.badRequest(file?.errors || 'Invalid file upload')
+    if (!fs.existsSync(userDir)) {
+      return response.badRequest('Folder does not exist')
     }
 
-    try {
-      validateFile(file) // Utilisez la fonction de validation personnalisée pour des vérifications supplémentaires
-    } catch (error) {
-      return response.badRequest(error.message)
+    const filePaths = []
+
+    for (const file of files) {
+      const filePath = `${userDir}/${file.clientName}`
+      await file.move(userDir)
+      filePaths.push(filePath)
     }
 
-    const fileName = `${cuid()}.${file.extname}`
+    return response.created({ message: 'Files uploaded successfully', paths: filePaths })
+  }
 
-    await file.move(Application.tmpPath('uploads'), {
-      name: fileName,
-    })
+  async list({ auth, request, response }: HttpContext) {
+    const user = auth.user!
+    const path = request.input('path', '')
 
-    const newFile = await File.create({
-      userId: payload.userId,
-      fileName: file.clientName,
-      filePath: Application.tmpPath('uploads', fileName),
-      fileType: file.type,
-    })
+    const userDir = app.makePath('data', user.id.toString(), path)
 
-    return response.created({ message: 'File uploaded successfully', data: newFile })
+    if (!fs.existsSync(userDir)) {
+      return response.notFound('Folder not found')
+    }
+
+    const files = await fs.promises.readdir(userDir)
+    return response.ok(files)
+  }
+
+  async read({ auth, params, request, response }: HttpContext) {
+    const user = auth.user!
+    const path = request.input('path', '')
+    const filePath = app.makePath('data', user.id.toString(), path, params.fileId)
+
+    if (!fs.existsSync(filePath)) {
+      return response.notFound('File not found')
+    }
+
+    return response.download(filePath)
+  }
+
+  async delete({ auth, params, request, response }: HttpContext) {
+    const user = auth.user!
+    const path = request.input('path', '')
+    const filePath = app.makePath('data', user.id.toString(), path, params.fileId)
+
+    if (!fs.existsSync(filePath)) {
+      return response.notFound('File not found')
+    }
+
+    await fs.promises.unlink(filePath)
+    return response.ok({ message: 'File deleted successfully' })
   }
 }
