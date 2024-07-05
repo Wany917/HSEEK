@@ -36,7 +36,6 @@ export default class InvoicesController {
 
   async getInvoiceById({ response, params }: HttpContext) {
     try {
-      //await request.validateUsing(getInvoiceValidator)
 
       const invoice = await Invoice.findOrFail(params.id)
       return response.json(invoice)
@@ -48,7 +47,6 @@ export default class InvoicesController {
 
   async deleteInvoice({ response, params }: HttpContext) {
     try {
-      //await request.validateUsing(deleteInvoiceValidator)
 
       const invoice = await Invoice.findOrFail(params.id)
       await invoice.delete()
