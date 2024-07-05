@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { createInvoiceValidator } from '#validators/invoices/create_invoice'
 import { updateInvoiceValidator } from '#validators/invoices/update_invoice'
+import User from '#models/user'
 import Invoice from '#models/invoice'
 
 export default class InvoicesController {
@@ -8,13 +9,17 @@ export default class InvoicesController {
     try {
       const payload = await request.validateUsing(createInvoiceValidator)
 
+      const userExists = await User.find(payload.to)
+      if (!userExists) {
+        return response.status(404).json({ error: 'User not found' })
+      }
+  
+
       const invoice = await Invoice.create({
-        from: payload.from,
         to: payload.to,
         description: payload.description,
         quantity: payload.quantity,
         unitPrice: payload.unitPrice,
-        dueAt: payload.dueAt,
       })
 
       return response.created(invoice)
@@ -59,12 +64,13 @@ export default class InvoicesController {
   }
 
   async updateInvoice({ request, response, params }: HttpContext) {
+
     try {
       await request.validateUsing(updateInvoiceValidator)
 
       const invoice = await Invoice.findOrFail(params.id)
 
-      invoice.merge(request.only(['from', 'to', 'description', 'quantity', 'unitPrice', 'dueAt']))
+      invoice.merge(request.only(['description', 'quantity', 'unitPrice']))
       await invoice.save()
 
       return response.json(invoice)
