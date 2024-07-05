@@ -32,5 +32,5 @@ export default class Invoice extends BaseModel {
   declare updatedAt: DateTime
 
   @belongsTo(() => User, {foreignKey: 'to'})
-  public toUser!: BelongsTo<typeof User> 
+  public declare toUser: BelongsTo<typeof User> 
 }

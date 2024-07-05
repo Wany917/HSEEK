@@ -32,7 +32,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare updatedAt: DateTime | null
 
   @hasMany(() => Invoice, { foreignKey: 'toId' })
-  public receivedInvoices!: HasMany<typeof Invoice>
+  public declare receivedInvoices: HasMany<typeof Invoice>
 
   static accessTokens = DbAccessTokensProvider.forModel(User)
 }
