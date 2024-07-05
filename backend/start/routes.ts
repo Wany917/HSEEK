@@ -10,6 +10,8 @@ const UsersController = () => import('#controllers/users_controller')
 const FoldersController = () => import('#controllers/folders_controller')
 const FilesController = () => import('#controllers/files_controller')
 
+const InvoicesController = () => import('#controllers/invoices_controller')
+
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
@@ -37,7 +39,8 @@ router
     router.post('/', [FoldersController, 'create']).use(middleware.auth())
     router.put('/:folderId', [FoldersController, 'modify']).use(middleware.auth())
     router.delete('/:folderId', [FoldersController, 'delete']).use(middleware.auth())
-  }).prefix('folders')
+  })
+  .prefix('folders')
 
 router
   .group(() => {
@@ -45,6 +48,16 @@ router
     router.get('/', [FilesController, 'list']).use(middleware.auth())
     router.get('/:fileId', [FilesController, 'read']).use(middleware.auth())
     router.delete('/:fileId', [FilesController, 'delete']).use(middleware.auth())
-  }).prefix('files')
+  })
+  .prefix('files')
+
+router
+  .group(() => {
+    router.post('/', [InvoicesController, 'createInvoice']).use(middleware.auth())
+    router.get('/', [InvoicesController, 'getAllInvoices']).use(middleware.auth())
+    router.get('/:id', [InvoicesController, 'getInvoiceById']).use(middleware.auth())
+    router.delete('/:id', [InvoicesController, 'deleteInvoice']).use(middleware.auth())
+  })
+  .prefix('invoices')
 
 router.resource('users', UsersController).only(['index', 'show']).use('*', middleware.auth())

@@ -84,33 +84,33 @@ export default function OverviewFileView() {
     <FileStorageOverview
       total={GB}
       chart={{
-        series: 76,
+        series: 20,
       }}
       data={[
-        {
-          name: 'Images',
-          usedStorage: GB / 2,
-          filesCount: 223,
-          icon: <Box component="img" src="/assets/icons/files/ic_img.svg" />,
-        },
-        {
-          name: 'Media',
-          usedStorage: GB / 5,
-          filesCount: 223,
-          icon: <Box component="img" src="/assets/icons/files/ic_video.svg" />,
-        },
-        {
-          name: 'Documents',
-          usedStorage: GB / 5,
-          filesCount: 223,
-          icon: <Box component="img" src="/assets/icons/files/ic_document.svg" />,
-        },
-        {
-          name: 'Other',
-          usedStorage: GB / 10,
-          filesCount: 223,
-          icon: <Box component="img" src="/assets/icons/files/ic_file.svg" />,
-        },
+        // {
+        //   name: 'Images',
+        //   usedStorage: GB / 2,
+        //   filesCount: 223,
+        //   icon: <Box component="img" src="/assets/icons/files/ic_img.svg" />,
+        // },
+        // {
+        //   name: 'Media',
+        //   usedStorage: GB / 5,
+        //   filesCount: 223,
+        //   icon: <Box component="img" src="/assets/icons/files/ic_video.svg" />,
+        // },
+        // {
+        //   name: 'Documents',
+        //   usedStorage: GB / 5,
+        //   filesCount: 223,
+        //   icon: <Box component="img" src="/assets/icons/files/ic_document.svg" />,
+        // },
+        // {
+        //   name: 'Other',
+        //   usedStorage: GB / 10,
+        //   filesCount: 223,
+        //   icon: <Box component="img" src="/assets/icons/files/ic_file.svg" />,
+        // },
       ]}
     />
   );
@@ -119,9 +119,9 @@ export default function OverviewFileView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
-          {smDown && <Grid xs={12}>{renderStorageOverview}</Grid>}
+          {/* {smDown && <Grid xs={12}>{renderStorageOverview}</Grid>} */}
 
-          <Grid xs={12} sm={6} md={4}>
+          {/* <Grid xs={12} sm={6} md={4}>
             <FileWidget
               title="Dropbox"
               value={GB / 10}
@@ -146,10 +146,34 @@ export default function OverviewFileView() {
               total={GB}
               icon="/assets/icons/app/ic_onedrive.svg"
             />
-          </Grid>
+          </Grid> */}
 
           <Grid xs={12} md={6} lg={8}>
-            <FileDataActivity
+
+          <FileManagerPanel
+                title="Upload file for scan"
+                link={paths.dashboard.fileManager}
+                onOpen={upload.onTrue}
+                sx={{ mt: 2 }}
+          />
+
+          <UploadBox
+              onDrop={handleDrop}
+              placeholder={
+                <Stack spacing={0.5} alignItems="center" sx={{ color: 'text.disabled' }}>
+                  <Iconify icon="eva:cloud-upload-fill" width={40} />
+                  <Typography variant="body2">Upload file for scan</Typography>
+                </Stack>
+              }
+              sx={{
+                mb: 3,
+                py: 2.5,
+                width: 'auto',
+                height: 'auto',
+                borderRadius: 1.5,
+              }}
+            />
+            {/* <FileDataActivity
               title="Data Activity"
               chart={{
                 labels: TIME_LABELS,
@@ -201,10 +225,10 @@ export default function OverviewFileView() {
                   },
                 ],
               }}
-            />
+            /> */}
 
             <div>
-              <FileManagerPanel
+              {/* <FileManagerPanel
                 title="Folders"
                 link={paths.dashboard.fileManager}
                 onOpen={newFolder.onTrue}
@@ -226,7 +250,7 @@ export default function OverviewFileView() {
                     />
                   ))}
                 </Stack>
-              </Scrollbar>
+              </Scrollbar> */}
 
               <FileManagerPanel
                 title="Recent Files"
@@ -248,22 +272,6 @@ export default function OverviewFileView() {
           </Grid>
 
           <Grid xs={12} md={6} lg={4}>
-            <UploadBox
-              onDrop={handleDrop}
-              placeholder={
-                <Stack spacing={0.5} alignItems="center" sx={{ color: 'text.disabled' }}>
-                  <Iconify icon="eva:cloud-upload-fill" width={40} />
-                  <Typography variant="body2">Upload file</Typography>
-                </Stack>
-              }
-              sx={{
-                mb: 3,
-                py: 2.5,
-                width: 'auto',
-                height: 'auto',
-                borderRadius: 1.5,
-              }}
-            />
 
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{renderStorageOverview}</Box>
 

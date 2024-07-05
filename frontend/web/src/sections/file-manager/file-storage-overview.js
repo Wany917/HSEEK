@@ -48,7 +48,8 @@ export default function FileStorageOverview({ data, total, chart, ...other }) {
             offsetY: -40,
           },
           total: {
-            label: `Used of ${fData(total)} / 50GB`,
+            // label: `Used of ${fData(total)} / 50GB`,
+            label: `Used of 1 / 5 scans`,
             color: theme.palette.text.disabled,
             fontSize: theme.typography.body2.fontSize,
             fontWeight: theme.typography.body2.fontWeight,
