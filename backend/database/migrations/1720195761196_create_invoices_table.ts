@@ -13,7 +13,6 @@ export default class extends BaseSchema {
       table.decimal('unit_price', 10, 2).notNullable()
       table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
       table.timestamp('updated_at', { useTz: true }).notNullable().defaultTo(this.now())
-      table.timestamp('due_at', { useTz: true }).nullable()
 
       table.foreign('to').references('users.id').onDelete('CASCADE')
     })

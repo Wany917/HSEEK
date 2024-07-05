@@ -5,6 +5,5 @@ export const createInvoiceValidator = vine.compile(
     description: vine.string().minLength(2),
     quantity: vine.number().max(1).min(1),
     unitPrice: vine.number(),
-    dueAt: vine.date(),
   })
 )

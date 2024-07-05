@@ -20,7 +20,6 @@ export default class InvoicesController {
         description: payload.description,
         quantity: payload.quantity,
         unitPrice: payload.unitPrice,
-        dueAt: payload.dueAt,
       })
 
       return response.created(invoice)
@@ -71,7 +70,7 @@ export default class InvoicesController {
 
       const invoice = await Invoice.findOrFail(params.id)
 
-      invoice.merge(request.only(['description', 'quantity', 'unitPrice', 'dueAt']))
+      invoice.merge(request.only(['description', 'quantity', 'unitPrice']))
       await invoice.save()
 
       return response.json(invoice)
