@@ -28,6 +28,6 @@ export default class Invoice extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @belongsTo(() => User, {foreignKey: 'to'})
-  public declare toUser: BelongsTo<typeof User> 
+  @belongsTo(() => User, { foreignKey: 'to' })
+  declare toUser: BelongsTo<typeof User>
 }
