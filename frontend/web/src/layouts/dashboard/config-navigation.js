@@ -57,11 +57,16 @@ export function useNavData() {
       {
         subheader: t('overview'),
         items: [
-          {
-            title: t('app'),
-            path: paths.dashboard.root,
-            icon: ICONS.dashboard,
-          },
+          // {
+          //   title: t('app'),
+          //   path: paths.dashboard.root,
+          //   icon: ICONS.dashboard,
+          // },
+          // {
+          //   title: t('ecommerce'),
+          //   path: paths.dashboard.general.ecommerce,
+          //   icon: ICONS.ecommerce,
+          // },
           // {
           //   title: t('analytics'),
           //   path: paths.dashboard.general.analytics,
@@ -106,20 +111,20 @@ export function useNavData() {
           },
 
           // PRODUCT
-          {
-            title: t('product'),
-            path: paths.dashboard.product.root,
-            icon: ICONS.product,
-            children: [
-              { title: t('list'), path: paths.dashboard.product.root },
-              {
-                title: t('details'),
-                path: paths.dashboard.product.demo.details,
-              },
-              { title: t('create'), path: paths.dashboard.product.new },
-              { title: t('edit'), path: paths.dashboard.product.demo.edit },
-            ],
-          },
+          // {
+          //   title: t('product'),
+          //   path: paths.dashboard.product.root,
+          //   icon: ICONS.product,
+          //   children: [
+          //     { title: t('list'), path: paths.dashboard.product.root },
+          //     {
+          //       title: t('details'),
+          //       path: paths.dashboard.product.demo.details,
+          //     },
+          //     { title: t('create'), path: paths.dashboard.product.new },
+          //     { title: t('edit'), path: paths.dashboard.product.demo.edit },
+          //   ],
+          // },
 
           // ORDER
           {
@@ -149,19 +154,19 @@ export function useNavData() {
           },
 
           // BLOG
-          {
-            title: t('blog'),
-            path: paths.dashboard.post.root,
-            icon: ICONS.blog,
-            children: [
-              { title: t('list'), path: paths.dashboard.post.root },
-              { title: t('details'), path: paths.dashboard.post.demo.details },
-              { title: t('create'), path: paths.dashboard.post.new },
-              { title: t('edit'), path: paths.dashboard.post.demo.edit },
-            ],
-          },
+          // {
+          //   title: t('blog'),
+          //   path: paths.dashboard.post.root,
+          //   icon: ICONS.blog,
+          //   children: [
+          //     { title: t('list'), path: paths.dashboard.post.root },
+          //     { title: t('details'), path: paths.dashboard.post.demo.details },
+          //     { title: t('create'), path: paths.dashboard.post.new },
+          //     { title: t('edit'), path: paths.dashboard.post.demo.edit },
+          //   ],
+          // },
 
-          // JOB
+          // // JOB
           // {
           //   title: t('job'),
           //   path: paths.dashboard.job.root,
@@ -174,7 +179,7 @@ export function useNavData() {
           //   ],
           // },
 
-          // TOUR
+          // // TOUR
           // {
           //   title: t('tour'),
           //   path: paths.dashboard.tour.root,
@@ -202,21 +207,21 @@ export function useNavData() {
           //   info: <Label color="error">+32</Label>,
           // },
 
-          // CHAT 
-          {
-            title: t('chat'),
-            path: paths.dashboard.chat,
-            icon: ICONS.chat,
-          },
+          // // CHAT
+          // {
+          //   title: t('chat'),
+          //   path: paths.dashboard.chat,
+          //   icon: ICONS.chat,
+          // },
 
-          // CALENDAR
+          // // CALENDAR
           // {
           //   title: t('calendar'),
           //   path: paths.dashboard.calendar,
           //   icon: ICONS.calendar,
           // },
 
-          // KANBAN
+          // // KANBAN
           // {
           //   title: t('kanban'),
           //   path: paths.dashboard.kanban,

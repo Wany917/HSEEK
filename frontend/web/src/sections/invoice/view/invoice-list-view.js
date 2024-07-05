@@ -231,22 +231,22 @@ export default function InvoiceListView() {
               name: 'List',
             },
           ]}
-          action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.invoice.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              New Invoice
-            </Button>
-          }
+          // action={
+          //   <Button
+          //     component={RouterLink}
+          //     href={paths.dashboard.invoice.new}
+          //     variant="contained"
+          //     startIcon={<Iconify icon="mingcute:add-line" />}
+          //   >
+          //     New Invoice
+          //   </Button>
+          // }
           sx={{
             mb: { xs: 3, md: 5 },
           }}
         />
 
-        <Card
+        {/* <Card
           sx={{
             mb: { xs: 3, md: 5 },
           }}
@@ -303,10 +303,10 @@ export default function InvoiceListView() {
               />
             </Stack>
           </Scrollbar>
-        </Card>
+        </Card> */}
 
         <Card>
-          <Tabs
+          {/* <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
@@ -332,15 +332,15 @@ export default function InvoiceListView() {
                 }
               />
             ))}
-          </Tabs>
+          </Tabs> */}
 
-          <InvoiceTableToolbar
+          {/* <InvoiceTableToolbar
             filters={filters}
             onFilters={handleFilters}
             //
             dateError={dateError}
             serviceOptions={INVOICE_SERVICE_OPTIONS.map((option) => option.name)}
-          />
+          /> */}
 
           {canReset && (
             <InvoiceTableFiltersResult
