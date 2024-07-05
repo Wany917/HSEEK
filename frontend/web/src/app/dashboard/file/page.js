@@ -9,7 +9,7 @@ export const metadata = {
 export default function OverviewFilePage() {
   return (
     <>
-      <OverviewFileView />;
+      <OverviewFileView />
     </>
   );
 }

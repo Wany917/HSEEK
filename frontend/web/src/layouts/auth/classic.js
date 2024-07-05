@@ -77,7 +77,7 @@ export default function AuthClassicLayout({ children, image, title }) {
       }}
     >
       <Typography variant="h3" sx={{ maxWidth: 480, textAlign: 'center' }}>
-        {title || 'Hi, Welcome back'}
+        {title || 'Log in HollowSeek'}
       </Typography>
 
       <Box

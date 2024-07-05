@@ -27,10 +27,10 @@ const OPTIONS = [
     label: 'Home',
     linkTo: '/',
   },
-  {
-    label: 'Profile',
-    linkTo: paths.dashboard.user.profile,
-  },
+  // {
+  //   label: 'Profile',
+  //   linkTo: paths.dashboard.user.profile,
+  // },
   {
     label: 'Settings',
     linkTo: paths.dashboard.user.account,
@@ -101,10 +101,6 @@ export default function AccountPopover() {
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
             {user?.displayName}
-          </Typography>
-
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user?.email}
           </Typography>
         </Box>
 
