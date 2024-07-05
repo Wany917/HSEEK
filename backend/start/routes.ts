@@ -57,6 +57,7 @@ router
     router.get('/', [InvoicesController, 'getAllInvoices']).use(middleware.auth())
     router.get('/:id', [InvoicesController, 'getInvoiceById']).use(middleware.auth())
     router.delete('/:id', [InvoicesController, 'deleteInvoice']).use(middleware.auth())
+    router.put('/:id', [InvoicesController, 'updateInvoice']).use(middleware.auth())
   })
   .prefix('invoices')
 
