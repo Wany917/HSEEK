@@ -21,14 +21,14 @@ export default class UsersController {
     }
   }
 
-  async login({ request, response }: HttpContext) {
+  async login({ request, response, auth }: HttpContext) {
     try {
       const { email, password } = await request.validateUsing(loginValidator)
       const user = await User.verifyCredentials(email, password)
-      const token = await User.accessTokens.create(user)
+      const token = await auth.use('jwt').generate(user)
 
       return response.ok({
-        zaccessToken: token.value!.release(),
+        accessToken: token.token,
       })
     } catch (error) {
       return response.status(401).send({ error: 'Login failed', details: error.messages })
@@ -36,8 +36,11 @@ export default class UsersController {
   }
 
   async me({ auth, response }: HttpContext) {
+    await auth.use('jwt').authenticate()
     const user = auth.user!
-    return response.ok(user)
+    return response.ok({
+      user: user,
+    })
   }
 
   async index({ request, response }: HttpContext) {

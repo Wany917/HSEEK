@@ -36,6 +36,4 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @hasMany(() => Invoice, { foreignKey: 'toId' })
   declare receivedInvoices: HasMany<typeof Invoice>
-
-  static accessTokens = DbAccessTokensProvider.forModel(User)
 }
