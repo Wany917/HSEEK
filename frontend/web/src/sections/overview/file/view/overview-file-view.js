@@ -30,6 +30,8 @@ import FileStorageOverview from '../../../file-manager/file-storage-overview';
 import FileManagerFolderItem from '../../../file-manager/file-manager-folder-item';
 import FileManagerNewFolderDialog from '../../../file-manager/file-manager-new-folder-dialog';
 
+import { sendFile } from 'src/api/file';
+
 // ----------------------------------------------------------------------
 
 const GB = 1000000000 * 24;
@@ -74,7 +76,6 @@ export default function OverviewFileView() {
           preview: URL.createObjectURL(file),
         })
       );
-
       setFiles([...files, ...newFiles]);
     },
     [files]
@@ -150,13 +151,12 @@ export default function OverviewFileView() {
 
           <Grid xs={12} md={6} lg={8}>
 
-          <FileManagerPanel
-                title="Upload file for scan"
-                link={paths.dashboard.fileManager}
-                onOpen={upload.onTrue}
-                sx={{ mt: 2 }}
-          />
-
+          <Typography sx={{                 
+                mb: 1,
+                py: 2.5,
+                width: 'auto',
+                height: 'auto',
+                color: 'black'}}> Upload file for scan :</Typography>
           <UploadBox
               onDrop={handleDrop}
               placeholder={
@@ -173,6 +173,11 @@ export default function OverviewFileView() {
                 borderRadius: 1.5,
               }}
             />
+
+            <Stack spacing={0.5} alignItems="center">
+                  <Typography>Scan Result : {/*TO DO : RECUPERER LA REPONSE DU SCAN*/}</Typography>
+            </Stack>
+
             {/* <FileDataActivity
               title="Data Activity"
               chart={{
@@ -252,12 +257,12 @@ export default function OverviewFileView() {
                 </Stack>
               </Scrollbar> */}
 
-              <FileManagerPanel
-                title="Recent Files"
-                link={paths.dashboard.fileManager}
-                onOpen={upload.onTrue}
-                sx={{ mt: 2 }}
-              />
+                <Typography sx={{                 
+                mb: 1,
+                py: 2.5,
+                width: 'auto',
+                height: 'auto',
+                color: 'black'}}> Recent files :</Typography>
 
               <Stack spacing={2}>
                 {_files.slice(0, 5).map((file) => (
