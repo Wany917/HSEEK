@@ -17,10 +17,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import AvatarGroup, { avatarGroupClasses } from '@mui/material/AvatarGroup';
 
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-
 import { fDate } from 'src/utils/format-time';
 import { fShortenNumber } from 'src/utils/format-number';
+
+import { useAuthContext } from 'src/auth/hooks';
 
 import Image from 'src/components/image';
 import Iconify from 'src/components/iconify';
@@ -28,7 +28,7 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export default function ProfilePostItem({ post }) {
-  const { user } = useMockedUser();
+  const { user } = useAuthContext();
 
   const commentRef = useRef(null);
 

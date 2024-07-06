@@ -7,7 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
-import { useMockedUser } from 'src/hooks/use-mocked-user';
+import { useAuthContext } from 'src/auth/hooks';
 
 import Iconify from 'src/components/iconify';
 
@@ -16,7 +16,7 @@ import { useGetMessage } from './hooks';
 // ----------------------------------------------------------------------
 
 export default function ChatMessageItem({ message, participants, onOpenLightbox }) {
-  const { user } = useMockedUser();
+  const { user } = useAuthContext();
 
   const { me, senderDetails, hasImage } = useGetMessage({
     message,

@@ -9,10 +9,9 @@ import IconButton from '@mui/material/IconButton';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-
 import uuidv4 from 'src/utils/uuidv4';
 
+import { useAuthContext } from 'src/auth/hooks';
 import { sendMessage, createConversation } from 'src/api/chat';
 
 import Iconify from 'src/components/iconify';
@@ -28,7 +27,7 @@ export default function ChatMessageInput({
 }) {
   const router = useRouter();
 
-  const { user } = useMockedUser();
+  const { user } = useAuthContext();
 
   const fileRef = useRef(null);
 
