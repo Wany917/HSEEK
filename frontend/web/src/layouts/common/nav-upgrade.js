@@ -1,7 +1,4 @@
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-
-import { paths } from 'src/routes/paths';
 
 import { useAuthContext } from 'src/auth/hooks';
 
@@ -18,9 +15,7 @@ export default function NavUpgrade() {
         textAlign: 'center',
       }}
     >
-      <Stack alignItems="center">
-
-      </Stack>
+      <Stack alignItems="center" />
     </Stack>
   );
 }
