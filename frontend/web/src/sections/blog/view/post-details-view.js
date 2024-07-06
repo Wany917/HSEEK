@@ -19,7 +19,7 @@ import { RouterLink } from 'src/routes/components';
 
 import { fShortenNumber } from 'src/utils/format-number';
 
-import { useGetPost } from 'src/api/blog';
+import { useGetPost } from 'src/api/user';
 import { POST_PUBLISH_OPTIONS } from 'src/_mock';
 
 import Iconify from 'src/components/iconify';
