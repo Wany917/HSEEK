@@ -7,7 +7,7 @@ export const registerValidator = vine.compile(
       .minLength(3)
       .maxLength(25)
       .toLowerCase()
-      .unique(async (query, field) => {
+      .unique(async (query: any, field: any) => {
         const user = await query.from('users').where('username', field).first()
         return !user
       }),
@@ -15,7 +15,7 @@ export const registerValidator = vine.compile(
       .string()
       .email()
       .toLowerCase()
-      .unique(async (query, field) => {
+      .unique(async (query: any, field: any) => {
         const user = await query.from('users').where('email', field).first()
         return !user
       }),
@@ -45,7 +45,7 @@ export const updateProfileValidator = vine.compile(
       .minLength(3)
       .maxLength(25)
       .toLowerCase()
-      .unique(async (query, field) => {
+      .unique(async (query: any, field: any) => {
         const user = await query.from('users').where('username', field).first()
         return !user
       }),
@@ -53,7 +53,7 @@ export const updateProfileValidator = vine.compile(
       .string()
       .email()
       .toLowerCase()
-      .unique(async (query, field) => {
+      .unique(async (query: any, field: any) => {
         const user = await query.from('users').where('email', field).first()
         return !user
       }),

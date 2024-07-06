@@ -28,7 +28,7 @@ export default class UsersController {
       const token = await User.accessTokens.create(user)
 
       return response.ok({
-        token: token.value!.release(),
+        zaccessToken: token.value!.release(),
       })
     } catch (error) {
       return response.status(401).send({ error: 'Login failed', details: error.messages })

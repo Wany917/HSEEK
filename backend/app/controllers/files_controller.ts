@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import fs from 'node:fs'
+import fs from 'fs'
 import app from '@adonisjs/core/services/app'
 import { uploadFileValidator } from '#validators/file'
 
