@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import app from '@adonisjs/core/services/app'
 import { uploadFileValidator } from '#validators/file'
 import cuid from 'cuid'
@@ -9,7 +9,11 @@ export default class FilesController {
   async upload({ auth, request, response }: HttpContext) {
     const user = auth.user!
     const { file, path: requestPath } = await request.validateUsing(uploadFileValidator)
-    const userDir = path.join(app.makePath('data'), user.id.toString(), requestPath || '')
+    const userDir = path.join(
+      app.makePath('../frontend/web/public/data'),
+      user.id.toString(),
+      requestPath || ''
+    )
 
     console.log(`Attempting to upload file to directory: ${userDir}`)
 

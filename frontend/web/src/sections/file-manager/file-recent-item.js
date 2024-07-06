@@ -27,23 +27,14 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import FileManagerShareDialog from './file-manager-share-dialog';
 import FileManagerFileDetails from './file-manager-file-details';
 
-// ----------------------------------------------------------------------
-
 export default function FileRecentItem({ file, onDelete, sx, ...other }) {
   const { enqueueSnackbar } = useSnackbar();
-
   const { copy } = useCopyToClipboard();
-
   const smUp = useResponsive('up', 'sm');
-
   const [inviteEmail, setInviteEmail] = useState('');
-
   const popover = usePopover();
-
   const share = useBoolean();
-
   const details = useBoolean();
-
   const favorite = useBoolean(file.isFavorited);
 
   const handleChangeInvite = useCallback((event) => {
@@ -87,7 +78,7 @@ export default function FileRecentItem({ file, onDelete, sx, ...other }) {
       primary={file.name}
       secondary={
         <>
-          {fData(file.size)}
+          {fData(file.size || 0)}
           <Box
             sx={{
               mx: 0.75,
@@ -97,7 +88,7 @@ export default function FileRecentItem({ file, onDelete, sx, ...other }) {
               bgcolor: 'currentColor',
             }}
           />
-          {fDateTime(file.modifiedAt)}
+          {fDateTime(file.modifiedAt || new Date())}
         </>
       }
       primaryTypographyProps={{
@@ -156,7 +147,7 @@ export default function FileRecentItem({ file, onDelete, sx, ...other }) {
         }}
         {...other}
       >
-        <FileThumbnail file={file.type} sx={{ width: 36, height: 36, mr: 1 }} />
+        <FileThumbnail file={file.type || 'file'} sx={{ width: 36, height: 36, mr: 1 }} />
 
         {renderText}
 

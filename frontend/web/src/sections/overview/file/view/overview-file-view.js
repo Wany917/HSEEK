@@ -1,63 +1,57 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
-import { paths } from 'src/routes/paths';
-
 import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { _files, _folders } from 'src/_mock';
+import { useAuthContext } from 'src/auth/hooks';
+import { sendFile, getFiles } from 'src/api/file';
 
 import Iconify from 'src/components/iconify';
-import Scrollbar from 'src/components/scrollbar';
 import { UploadBox } from 'src/components/upload';
 import { useSettingsContext } from 'src/components/settings';
 
-import FileWidget from '../../../file-manager/file-widget';
 import FileUpgrade from '../../../file-manager/file-upgrade';
-import FileRecentItem from '../../../file-manager/file-recent-item';
-import FileDataActivity from '../../../file-manager/file-data-activity';
-import FileManagerPanel from '../../../file-manager/file-manager-panel';
 import FileStorageOverview from '../../../file-manager/file-storage-overview';
-import FileManagerFolderItem from '../../../file-manager/file-manager-folder-item';
 import FileManagerNewFolderDialog from '../../../file-manager/file-manager-new-folder-dialog';
-
-import { sendFile } from 'src/api/file';
-
-// ----------------------------------------------------------------------
 
 const GB = 1000000000 * 24;
 
-const TIME_LABELS = {
-  week: ['Mon', 'Tue', 'Web', 'Thu', 'Fri', 'Sat', 'Sun'],
-  month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  year: ['2018', '2019', '2020', '2021', '2022'],
-};
-
-// ----------------------------------------------------------------------
-
 export default function OverviewFileView() {
   const theme = useTheme();
-
   const smDown = useResponsive('down', 'sm');
-
   const settings = useSettingsContext();
-
   const [folderName, setFolderName] = useState('');
-
   const [files, setFiles] = useState([]);
-
   const newFolder = useBoolean();
-
   const upload = useBoolean();
+  const { user } = useAuthContext();
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        const fetchedFiles = await getFiles();
+        setFiles(fetchedFiles.map(name => ({
+          name,
+          preview: '', // Pas de preview disponible
+          size: 'Unknown',
+          modifiedAt: new Date().toISOString(),
+        })));
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      }
+    };
+
+    fetchFiles();
+  }, []);
 
   const handleChangeFolderName = useCallback((event) => {
     setFolderName(event.target.value);
@@ -70,223 +64,86 @@ export default function OverviewFileView() {
   }, [newFolder]);
 
   const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      );
-      setFiles([...files, ...newFiles]);
+    async (acceptedFiles) => {
+      try {
+        const uploadPromises = acceptedFiles.map(file => sendFile(file));
+        const responses = await Promise.all(uploadPromises);
+        const newFiles = responses.map((response, index) => ({
+          ...acceptedFiles[index],
+          preview: URL.createObjectURL(acceptedFiles[index]),
+          path: response.path,
+        }));
+        setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
     },
-    [files]
+    []
   );
 
+  const handleDownload = useCallback((fileName) => {
+    const userId = user.id;
+    const fileUrl = `../../../../../public/data/${userId}/${fileName}`;
+    console.log("aled",fileUrl);
+    const a = document.createElement("a");
+    a.href = fileUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }, [user]);
+  
+
   const renderStorageOverview = (
-    <FileStorageOverview
-      total={GB}
-      chart={{
-        series: 20,
-      }}
-      data={[
-        // {
-        //   name: 'Images',
-        //   usedStorage: GB / 2,
-        //   filesCount: 223,
-        //   icon: <Box component="img" src="/assets/icons/files/ic_img.svg" />,
-        // },
-        // {
-        //   name: 'Media',
-        //   usedStorage: GB / 5,
-        //   filesCount: 223,
-        //   icon: <Box component="img" src="/assets/icons/files/ic_video.svg" />,
-        // },
-        // {
-        //   name: 'Documents',
-        //   usedStorage: GB / 5,
-        //   filesCount: 223,
-        //   icon: <Box component="img" src="/assets/icons/files/ic_document.svg" />,
-        // },
-        // {
-        //   name: 'Other',
-        //   usedStorage: GB / 10,
-        //   filesCount: 223,
-        //   icon: <Box component="img" src="/assets/icons/files/ic_file.svg" />,
-        // },
-      ]}
-    />
+    <FileStorageOverview total={GB} chart={{ series: 20 }} data={[]} />
   );
 
   return (
-    <>
-      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
-        <Grid container spacing={3}>
-          {/* {smDown && <Grid xs={12}>{renderStorageOverview}</Grid>} */}
-
-          {/* <Grid xs={12} sm={6} md={4}>
-            <FileWidget
-              title="Dropbox"
-              value={GB / 10}
-              total={GB}
-              icon="/assets/icons/app/ic_dropbox.svg"
-            />
-          </Grid>
-
-          <Grid xs={12} sm={6} md={4}>
-            <FileWidget
-              title="Drive"
-              value={GB / 5}
-              total={GB}
-              icon="/assets/icons/app/ic_drive.svg"
-            />
-          </Grid>
-
-          <Grid xs={12} sm={6} md={4}>
-            <FileWidget
-              title="OneDrive"
-              value={GB / 2}
-              total={GB}
-              icon="/assets/icons/app/ic_onedrive.svg"
-            />
-          </Grid> */}
-
-          <Grid xs={12} md={6} lg={8}>
-
-          <Typography sx={{                 
-                mb: 1,
-                py: 2.5,
-                width: 'auto',
-                height: 'auto',
-                color: 'black'}}> Upload file for scan :</Typography>
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+      <Grid container spacing={3}>
+        <Grid xs={12} md={6} lg={8}>
+          <Typography sx={{ mb: 1, py: 2.5, width: 'auto', height: 'auto', color: 'black' }}>
+            Upload file for scan :
+          </Typography>
           <UploadBox
-              onDrop={handleDrop}
-              placeholder={
-                <Stack spacing={0.5} alignItems="center" sx={{ color: 'text.disabled' }}>
-                  <Iconify icon="eva:cloud-upload-fill" width={40} />
-                  <Typography variant="body2">Upload file for scan</Typography>
-                </Stack>
-              }
-              sx={{
-                mb: 3,
-                py: 2.5,
-                width: 'auto',
-                height: 'auto',
-                borderRadius: 1.5,
-              }}
-            />
-
-            <Stack spacing={0.5} alignItems="center">
-                  <Typography>Scan Result : {/*TO DO : RECUPERER LA REPONSE DU SCAN*/}</Typography>
-            </Stack>
-
-            {/* <FileDataActivity
-              title="Data Activity"
-              chart={{
-                labels: TIME_LABELS,
-                colors: [
-                  theme.palette.primary.main,
-                  theme.palette.error.main,
-                  theme.palette.warning.main,
-                  theme.palette.text.disabled,
-                ],
-                series: [
-                  {
-                    type: 'Week',
-                    data: [
-                      { name: 'Images', data: [20, 34, 48, 65, 37, 48, 9] },
-                      { name: 'Media', data: [10, 34, 13, 26, 27, 28, 18] },
-                      { name: 'Documents', data: [10, 14, 13, 16, 17, 18, 28] },
-                      { name: 'Other', data: [5, 12, 6, 7, 8, 9, 48] },
-                    ],
-                  },
-                  {
-                    type: 'Month',
-                    data: [
-                      {
-                        name: 'Images',
-                        data: [10, 34, 13, 56, 77, 88, 99, 77, 45, 12, 43, 34],
-                      },
-                      {
-                        name: 'Media',
-                        data: [10, 34, 13, 56, 77, 88, 99, 77, 45, 12, 43, 34],
-                      },
-                      {
-                        name: 'Documents',
-                        data: [10, 34, 13, 56, 77, 88, 99, 77, 45, 12, 43, 34],
-                      },
-                      {
-                        name: 'Other',
-                        data: [10, 34, 13, 56, 77, 88, 99, 77, 45, 12, 43, 34],
-                      },
-                    ],
-                  },
-                  {
-                    type: 'Year',
-                    data: [
-                      { name: 'Images', data: [10, 34, 13, 56, 77] },
-                      { name: 'Media', data: [10, 34, 13, 56, 77] },
-                      { name: 'Documents', data: [10, 34, 13, 56, 77] },
-                      { name: 'Other', data: [10, 34, 13, 56, 77] },
-                    ],
-                  },
-                ],
-              }}
-            /> */}
-
-            <div>
-              {/* <FileManagerPanel
-                title="Folders"
-                link={paths.dashboard.fileManager}
-                onOpen={newFolder.onTrue}
-                sx={{ mt: 5 }}
-              />
-
-              <Scrollbar>
-                <Stack direction="row" spacing={3} sx={{ pb: 3 }}>
-                  {_folders.map((folder) => (
-                    <FileManagerFolderItem
-                      key={folder.id}
-                      folder={folder}
-                      onDelete={() => console.info('DELETE', folder.id)}
-                      sx={{
-                        ...(_folders.length > 3 && {
-                          minWidth: 222,
-                        }),
-                      }}
-                    />
-                  ))}
-                </Stack>
-              </Scrollbar> */}
-
-                <Typography sx={{                 
-                mb: 1,
-                py: 2.5,
-                width: 'auto',
-                height: 'auto',
-                color: 'black'}}> Recent files :</Typography>
-
-              <Stack spacing={2}>
-                {_files.slice(0, 5).map((file) => (
-                  <FileRecentItem
-                    key={file.id}
-                    file={file}
-                    onDelete={() => console.info('DELETE', file.id)}
-                  />
-                ))}
+            onDrop={handleDrop}
+            placeholder={
+              <Stack spacing={0.5} alignItems="center" sx={{ color: 'text.disabled' }}>
+                <Iconify icon="eva:cloud-upload-fill" width={40} />
+                <Typography variant="body2">Upload file for scan</Typography>
               </Stack>
-            </div>
-          </Grid>
+            }
+            sx={{ mb: 3, py: 2.5, width: 'auto', height: 'auto', borderRadius: 1.5 }}
+          />
 
-          <Grid xs={12} md={6} lg={4}>
+          <Stack spacing={0.5} alignItems="center">
+            <Typography>Scan Result: {/* TO DO: RECUPERER LA REPONSE DU SCAN */}</Typography>
+          </Stack>
 
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{renderStorageOverview}</Box>
-
-            <FileUpgrade sx={{ mt: 3 }} />
-          </Grid>
+          <div>
+            <Typography sx={{ mb: 1, py: 2.5, width: 'auto', height: 'auto', color: 'black' }}>
+              Recent files :
+            </Typography>
+            <Stack spacing={2}>
+              {files.map((file, index) => (
+                <Stack key={index} direction="row" spacing={2} alignItems="center">
+                  <Typography sx={{ fontSize: 16, color: 'text.primary' }}>
+                    {file.name}
+                  </Typography>
+                  <Button variant="outlined" onClick={() => handleDownload(file.name)}>
+                    Download
+                  </Button>
+                </Stack>
+              ))}
+            </Stack>
+          </div>
         </Grid>
-      </Container>
-
+        <Grid xs={12} md={6} lg={4}>
+          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{renderStorageOverview}</Box>
+          <FileUpgrade sx={{ mt: 3 }} />
+        </Grid>
+      </Grid>
       <FileManagerNewFolderDialog open={upload.value} onClose={upload.onFalse} />
-
       <FileManagerNewFolderDialog
         open={newFolder.value}
         onClose={newFolder.onFalse}
@@ -295,6 +152,6 @@ export default function OverviewFileView() {
         onChangeFolderName={handleChangeFolderName}
         onCreate={handleCreateNewFolder}
       />
-    </>
+    </Container>
   );
 }
