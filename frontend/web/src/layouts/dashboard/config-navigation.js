@@ -101,8 +101,8 @@ export function useNavData() {
             path: paths.dashboard.user.root,
             icon: ICONS.user,
             children: [
-              { title: t('profile'), path: paths.dashboard.user.root },
-              { title: t('cards'), path: paths.dashboard.user.cards },
+              // { title: t('profile'), path: paths.dashboard.user.root },
+              // { title: t('cards'), path: paths.dashboard.user.cards },
               { title: t('list'), path: paths.dashboard.user.list },
               { title: t('create'), path: paths.dashboard.user.new },
               { title: t('edit'), path: paths.dashboard.user.demo.edit },
@@ -127,15 +127,15 @@ export function useNavData() {
           // },
 
           // ORDER
-          {
-            title: t('order'),
-            path: paths.dashboard.order.root,
-            icon: ICONS.order,
-            children: [
-              { title: t('list'), path: paths.dashboard.order.root },
-              { title: t('details'), path: paths.dashboard.order.demo.details },
-            ],
-          },
+          // {
+          //   title: t('order'),
+          //   path: paths.dashboard.order.root,
+          //   icon: ICONS.order,
+          //   children: [
+          //     { title: t('list'), path: paths.dashboard.order.root },
+          //     { title: t('details'), path: paths.dashboard.order.demo.details },
+          //   ],
+          // },
 
           // INVOICE
           {
@@ -231,91 +231,91 @@ export function useNavData() {
       },
 
       // DEMO MENU STATES
-      {
-        subheader: t(t('other_cases')),
-        items: [
-          {
-            // default roles : All roles can see this entry.
-            // roles: ['user'] Only users can see this item.
-            // roles: ['admin'] Only admin can see this item.
-            // roles: ['admin', 'manager'] Only admin/manager can see this item.
-            // Reference from 'src/guards/RoleBasedGuard'.
-            title: t('item_by_roles'),
-            path: paths.dashboard.permission,
-            icon: ICONS.lock,
-            roles: ['admin', 'manager'],
-            caption: t('only_admin_can_see_this_item'),
-          },
-          {
-            title: t('menu_level'),
-            path: '#/dashboard/menu_level',
-            icon: ICONS.menuItem,
-            children: [
-              {
-                title: t('menu_level_1a'),
-                path: '#/dashboard/menu_level/menu_level_1a',
-              },
-              {
-                title: t('menu_level_1b'),
-                path: '#/dashboard/menu_level/menu_level_1b',
-                children: [
-                  {
-                    title: t('menu_level_2a'),
-                    path: '#/dashboard/menu_level/menu_level_1b/menu_level_2a',
-                  },
-                  {
-                    title: t('menu_level_2b'),
-                    path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b',
-                    children: [
-                      {
-                        title: t('menu_level_3a'),
-                        path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3a',
-                      },
-                      {
-                        title: t('menu_level_3b'),
-                        path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3b',
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            title: t('item_disabled'),
-            path: '#disabled',
-            icon: ICONS.disabled,
-            disabled: true,
-          },
-          {
-            title: t('item_label'),
-            path: '#label',
-            icon: ICONS.label,
-            info: (
-              <Label color="info" startIcon={<Iconify icon="solar:bell-bing-bold-duotone" />}>
-                NEW
-              </Label>
-            ),
-          },
-          {
-            title: t('item_caption'),
-            path: '#caption',
-            icon: ICONS.menuItem,
-            caption:
-              'Quisque malesuada placerat nisl. In hac habitasse platea dictumst. Cras id dui. Pellentesque commodo eros a enim. Morbi mollis tellus ac sapien.',
-          },
-          {
-            title: t('item_external_link'),
-            path: 'https://www.google.com/',
-            icon: ICONS.external,
-          },
-          {
-            title: t('blank'),
-            path: paths.dashboard.blank,
-            icon: ICONS.blank,
-          },
-        ],
-      },
+      // {
+      //   subheader: t(t('other_cases')),
+      //   items: [
+      //     {
+      //       // default roles : All roles can see this entry.
+      //       // roles: ['user'] Only users can see this item.
+      //       // roles: ['admin'] Only admin can see this item.
+      //       // roles: ['admin', 'manager'] Only admin/manager can see this item.
+      //       // Reference from 'src/guards/RoleBasedGuard'.
+      //       title: t('item_by_roles'),
+      //       path: paths.dashboard.permission,
+      //       icon: ICONS.lock,
+      //       roles: ['admin', 'manager'],
+      //       caption: t('only_admin_can_see_this_item'),
+      //     },
+      //     {
+      //       title: t('menu_level'),
+      //       path: '#/dashboard/menu_level',
+      //       icon: ICONS.menuItem,
+      //       children: [
+      //         {
+      //           title: t('menu_level_1a'),
+      //           path: '#/dashboard/menu_level/menu_level_1a',
+      //         },
+      //         {
+      //           title: t('menu_level_1b'),
+      //           path: '#/dashboard/menu_level/menu_level_1b',
+      //           children: [
+      //             {
+      //               title: t('menu_level_2a'),
+      //               path: '#/dashboard/menu_level/menu_level_1b/menu_level_2a',
+      //             },
+      //             {
+      //               title: t('menu_level_2b'),
+      //               path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b',
+      //               children: [
+      //                 {
+      //                   title: t('menu_level_3a'),
+      //                   path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3a',
+      //                 },
+      //                 {
+      //                   title: t('menu_level_3b'),
+      //                   path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3b',
+      //                 },
+      //               ],
+      //             },
+      //           ],
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       title: t('item_disabled'),
+      //       path: '#disabled',
+      //       icon: ICONS.disabled,
+      //       disabled: true,
+      //     },
+      //     {
+      //       title: t('item_label'),
+      //       path: '#label',
+      //       icon: ICONS.label,
+      //       info: (
+      //         <Label color="info" startIcon={<Iconify icon="solar:bell-bing-bold-duotone" />}>
+      //           NEW
+      //         </Label>
+      //       ),
+      //     },
+      //     {
+      //       title: t('item_caption'),
+      //       path: '#caption',
+      //       icon: ICONS.menuItem,
+      //       caption:
+      //         'Quisque malesuada placerat nisl. In hac habitasse platea dictumst. Cras id dui. Pellentesque commodo eros a enim. Morbi mollis tellus ac sapien.',
+      //     },
+      //     {
+      //       title: t('item_external_link'),
+      //       path: 'https://www.google.com/',
+      //       icon: ICONS.external,
+      //     },
+      //     {
+      //       title: t('blank'),
+      //       path: paths.dashboard.blank,
+      //       icon: ICONS.blank,
+      //     },
+      //   ],
+      // },
     ],
     [t]
   );
