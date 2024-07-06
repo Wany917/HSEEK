@@ -6,15 +6,18 @@ import { queryAllUsersValidator } from '#validators/user'
 import { updateProfileValidator } from '#validators/user'
 
 export default class UsersController {
-  async register({ request, response }: HttpContext) {
+  async register({ request, response, auth }: HttpContext) {
     try {
       const payload = await request.validateUsing(registerValidator)
       const user = new User()
 
       user.merge(payload)
-      await user.save()
+      await user.save() // Save the user to generate an ID
 
-      return response.created(user)
+      const token = await auth.use('jwt').generate(user) // Now generate the token
+
+      // Adjusted response to correctly return the created user and token
+      return response.created({ accessToken: token.token, data: user })
     } catch (error) {
       console.log(error)
       return response.status(400).send({ error: 'Registration failed', details: error.messages })
