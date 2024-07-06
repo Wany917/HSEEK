@@ -20,9 +20,6 @@ export default function NavUpgrade() {
     >
       <Stack alignItems="center">
 
-        <Button variant="contained" href={paths.minimalUI} target="_blank" rel="noopener">
-          Upgrade to Pro
-        </Button>
       </Stack>
     </Stack>
   );
