@@ -58,6 +58,7 @@
     "@maximemrf/adonisjs-jwt": "^0.1.0",
     "@vinejs/vine": "^2.1.0",
     "adonis-autoswagger": "^3.54.0",
+    "cuid": "^3.0.0",
     "fs": "0.0.1-security",
     "luxon": "^3.4.4",
     "pg": "^8.12.0",

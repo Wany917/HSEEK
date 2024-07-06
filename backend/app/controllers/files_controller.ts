@@ -1,49 +1,58 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import fs from 'fs'
+import path from 'path'
 import app from '@adonisjs/core/services/app'
 import { uploadFileValidator } from '#validators/file'
+import cuid from 'cuid'
 
 export default class FilesController {
   async upload({ auth, request, response }: HttpContext) {
     const user = auth.user!
-    const { file, path } = await request.validateUsing(uploadFileValidator)
-    const userDir = app.makePath('data', user.id.toString(), path || '')
+    const { file, path: requestPath } = await request.validateUsing(uploadFileValidator)
+    const userDir = path.join(app.makePath('data'), user.id.toString(), requestPath || '')
+
+    console.log(`Attempting to upload file to directory: ${userDir}`)
 
     if (!fs.existsSync(userDir)) {
-      return response.badRequest('Folder does not exist')
+      console.log(`Directory does not exist: ${userDir}, creating it...`)
+      fs.mkdirSync(userDir, { recursive: true })
     }
 
-    const filePaths = []
+    const fileName = `${cuid()}.${file.extname}`
+    await file.move(userDir, { name: fileName })
 
+    const filePath = path.join(userDir, fileName)
+    console.log(`File uploaded to: ${filePath}`)
 
-    const filePath = `${userDir}/${file.clientName}`
-    await file.move(userDir)
-    filePaths.push(filePath)
-    
-
-    return response.created({ message: 'File uploaded successfully', paths: filePaths })
+    return response.created({ message: 'File uploaded successfully', path: filePath })
   }
 
   async list({ auth, request, response }: HttpContext) {
     const user = auth.user!
-    const path = request.input('path', '')
+    const requestPath = request.input('path', '')
 
-    const userDir = app.makePath('data', user.id.toString(), path)
+    const userDir = path.join(app.makePath('data'), user.id.toString(), requestPath)
+
+    console.log(`Listing files in directory: ${userDir}`)
 
     if (!fs.existsSync(userDir)) {
+      console.error(`Directory does not exist: ${userDir}`)
       return response.notFound('Folder not found')
     }
 
-    const file = await fs.promises.readdir(userDir)
-    return response.ok(file)
+    const files = await fs.promises.readdir(userDir)
+    return response.ok(files)
   }
 
   async read({ auth, params, request, response }: HttpContext) {
     const user = auth.user!
-    const path = request.input('path', '')
-    const filePath = app.makePath('data', user.id.toString(), path, params.fileId)
+    const requestPath = request.input('path', '')
+    const filePath = path.join(app.makePath('data'), user.id.toString(), requestPath, params.fileId)
+
+    console.log(`Reading file: ${filePath}`)
 
     if (!fs.existsSync(filePath)) {
+      console.error(`File does not exist: ${filePath}`)
       return response.notFound('File not found')
     }
 
@@ -52,10 +61,13 @@ export default class FilesController {
 
   async delete({ auth, params, request, response }: HttpContext) {
     const user = auth.user!
-    const path = request.input('path', '')
-    const filePath = app.makePath('data', user.id.toString(), path, params.fileId)
+    const requestPath = request.input('path', '')
+    const filePath = path.join(app.makePath('data'), user.id.toString(), requestPath, params.fileId)
+
+    console.log(`Deleting file: ${filePath}`)
 
     if (!fs.existsSync(filePath)) {
+      console.error(`File does not exist: ${filePath}`)
       return response.notFound('File not found')
     }
 
