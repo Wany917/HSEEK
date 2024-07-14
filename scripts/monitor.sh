@@ -4,6 +4,7 @@
 WATCH_DIR=~/data
 DOCKERFILE_SRC=~/dockerfile_av_image/clamav/Dockerfile
 PULUMI_DIR=~/pulumi_script
+VENV_DIR=$PULUMI_DIR/venv
 
 # Fonction pour traiter la création/modification d'un répertoire
 process_directory() {
@@ -33,8 +34,11 @@ process_directory() {
         fi
     done
 
-    # Appeler le script Pulumi avec l'ID
-    (cd $PULUMI_DIR && pulumi up --yes --stack Strandiing/Hollow_Seek/dev --config user_id=$ID)
+    source "$VENV_DIR/bin/activate"
+    (cd $PULUMI_DIR && pulumi stack select "user_$ID" || pulumi stack init "user_$ID")
+    # Configurer et déployer avec Pulumi
+    (cd $PULUMI_DIR && pulumi config set user_id $ID && pulumi up --yes)
+
 }
 
 # Surveiller les modifications dans le répertoire WATCH_DIR
