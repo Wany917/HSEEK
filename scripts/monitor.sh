@@ -39,6 +39,8 @@ process_directory() {
     # Configurer et déployer avec Pulumi
     (cd $PULUMI_DIR && pulumi config set user_id $ID && pulumi up --yes)
 
+    rm "$USER_DIR/cont/"*
+
 }
 
 # Surveiller les modifications dans le répertoire WATCH_DIR
