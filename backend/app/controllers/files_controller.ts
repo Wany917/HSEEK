@@ -7,7 +7,7 @@ import cuid from 'cuid'
 import ScanResult from '#models/scan_result'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
-import { log } from 'node:console'
+import { DateTime } from 'luxon'
 
 const execAsync = promisify(exec)
 
@@ -172,10 +172,16 @@ export default class FilesController {
           parsedResult.scanTime = Number.parseFloat(value.split(' ')[0])
           break
         case 'Start Date':
-          parsedResult.startDate = new Date(value)
+          parsedResult.startDate = DateTime.fromISO(value)
+          if (!parsedResult.startDate.isValid) {
+            throw new Error('Invalid startDate')
+          }
           break
         case 'End Date':
-          parsedResult.endDate = new Date(value)
+          parsedResult.endDate = DateTime.fromISO(value)
+          if (!parsedResult.endDate.isValid) {
+            throw new Error('Invalid endDate')
+          }
           break
       }
     })
