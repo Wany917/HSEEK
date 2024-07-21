@@ -187,14 +187,19 @@ export default class FilesController {
     const user = auth.user!
     const userId = user.id.toString()
     const userDir = this.getUserDir(userId)
-    console.log('userDir', userDir)
     const tempLogDir = path.join(userDir, 'temp_log')
+
+    console.log(`[checkAnalysisResult] Starting for user ${userId}`)
+    console.log(`[checkAnalysisResult] User directory: ${userDir}`)
+    console.log(`[checkAnalysisResult] Temp log directory: ${tempLogDir}`)
 
     try {
       // Vérifier si le conteneur Docker est toujours en cours d'exécution
       const isContainerRunning = await this.isDockerContainerRunning(userId)
+      console.log(`[checkAnalysisResult] Is container running: ${isContainerRunning}`)
 
       if (isContainerRunning) {
+        console.log('[checkAnalysisResult] Analysis is still in progress')
         return response.ok({ message: 'Analysis is still in progress.' })
       }
 
@@ -203,18 +208,27 @@ export default class FilesController {
         .access(userDir)
         .then(() => true)
         .catch(() => false)
+      console.log(`[checkAnalysisResult] User directory exists: ${dirExists}`)
+
       if (!dirExists) {
+        console.log(
+          '[checkAnalysisResult] Analysis results not available. The directory may have been cleaned up.'
+        )
         return response.ok({
           message: 'Analysis results not available. The directory may have been cleaned up.',
         })
       }
 
       // Attendre un court instant pour s'assurer que le fichier de log est complètement écrit
+      console.log('[checkAnalysisResult] Waiting 1 second for log file to be written')
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       // Lire les fichiers du répertoire de logs
       const files = await fs.readdir(tempLogDir)
+      console.log(`[checkAnalysisResult] Number of files in log directory: ${files.length}`)
+
       if (files.length === 0) {
+        console.log('[checkAnalysisResult] No analysis results found')
         return response.ok({ message: 'No analysis results found.' })
       }
 
@@ -229,10 +243,14 @@ export default class FilesController {
       sortedFiles.sort((a, b) => b.mtime.getTime() - a.mtime.getTime())
 
       const mostRecentFile = sortedFiles[0].name
+      console.log(`[checkAnalysisResult] Most recent log file: ${mostRecentFile}`)
+
       const logFile = path.join(tempLogDir, mostRecentFile)
       const analysisResult = await fs.readFile(logFile, 'utf-8')
+      console.log('[checkAnalysisResult] Analysis result read from file')
 
       const parsedResult = this.parseAnalysisResult(analysisResult)
+      console.log('[checkAnalysisResult] Analysis result parsed')
 
       // Stocker les résultats en utilisant le modèle
       const scanResult = await ScanResult.create({
@@ -241,16 +259,23 @@ export default class FilesController {
         ...parsedResult,
         fullLog: analysisResult,
       })
+      console.log('[checkAnalysisResult] Scan result stored in database')
 
       // Nettoyer les répertoires
+      console.log(`[checkAnalysisResult] Attempting to remove user directory: ${userDir}`)
       await fs.rm(userDir, { recursive: true, force: true })
+      console.log('[checkAnalysisResult] User directory removed successfully')
 
+      console.log('[checkAnalysisResult] Returning successful response')
       return response.ok({
         message: 'Analysis completed and results stored.',
         result: scanResult,
       })
     } catch (error) {
-      console.error(`Error checking analysis result for user ${userId}:`, error)
+      console.error(
+        `[checkAnalysisResult] Error checking analysis result for user ${userId}:`,
+        error
+      )
       return response.internalServerError('Error checking analysis result')
     }
   }
