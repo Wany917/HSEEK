@@ -74,15 +74,46 @@ export default class FilesController {
     }
   }
 
-  async analyze({ auth, params, response }: HttpContext) {
+  async analyze({ auth, response }: HttpContext) {
     const user = auth.user!
     const userDir = this.getUserDir(user.id.toString())
     const tempLogDir = path.join(userDir, 'temp_log')
-    const logFile = path.join(tempLogDir, params.fileId.replace(/\.[^.]+$/, '.txt'))
 
     try {
+      // Lire tous les fichiers dans le répertoire temp_log
+      const files = await fs.readdir(tempLogDir)
+
+      // Trier les fichiers par date de modification (du plus récent au plus ancien)
+      const sortedFiles = await Promise.all(
+        files.map(async (file) => {
+          const filePath = path.join(tempLogDir, file)
+          const stats = await fs.stat(filePath)
+          return { name: file, mtime: stats.mtime }
+        })
+      )
+      sortedFiles.sort((a, b) => b.mtime.getTime() - a.mtime.getTime())
+
+      // Prendre le fichier le plus récent
+      const mostRecentFile = sortedFiles[0]
+
+      if (!mostRecentFile) {
+        return response.notFound('No analysis log found')
+      }
+
+      const logFile = path.join(tempLogDir, mostRecentFile.name)
       const analysisResult = await fs.readFile(logFile, 'utf-8')
-      return response.ok({ result: analysisResult })
+
+      // Extraire les informations pertinentes du résultat de l'analyse
+      const lines = analysisResult.split('\n')
+      const summary = lines[lines.length - 2] // La ligne d'avant-dernière contient généralement le résumé
+      const infected = summary.includes('Infected files: 1')
+
+      return response.ok({
+        result: analysisResult,
+        filename: mostRecentFile.name,
+        summary: summary,
+        infected: infected,
+      })
     } catch (error) {
       console.error('Error reading analysis result:', error)
       return response.internalServerError('Analysis result not available')
