@@ -160,8 +160,8 @@ export default function OverviewFileView() {
             <Typography variant="h6">Uploaded Files:</Typography>
 
             <Grid container spacing={2}>
-              {files.map((file, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
+              {files.map((file) => (
+                <Grid item xs={12} sm={6} md={4} key={file.id}>
                   <Card>
                     <CardContent>
                       <Typography variant="subtitle2" noWrap>
