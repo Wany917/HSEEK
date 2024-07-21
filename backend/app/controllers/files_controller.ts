@@ -7,6 +7,7 @@ import cuid from 'cuid'
 import ScanResult from '#models/scan_result'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
+import { log } from 'node:console'
 
 const execAsync = promisify(exec)
 
@@ -186,6 +187,7 @@ export default class FilesController {
     const user = auth.user!
     const userId = user.id.toString()
     const userDir = this.getUserDir(userId)
+    log('userDir', userDir)
     const tempLogDir = path.join(userDir, 'temp_log')
 
     try {
