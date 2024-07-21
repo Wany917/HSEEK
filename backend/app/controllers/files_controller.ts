@@ -4,10 +4,25 @@ import path from 'node:path'
 import app from '@adonisjs/core/services/app'
 import { uploadFileValidator } from '#validators/file'
 import cuid from 'cuid'
+import ScanResult from '#models/scan_result'
+import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
+
+const execAsync = promisify(exec)
 
 export default class FilesController {
+  private async isDockerContainerRunning(userId: string): Promise<boolean> {
+    try {
+      const { stdout } = await execAsync(`docker ps -q --filter name=c1_user_${userId}`)
+      return stdout.trim() !== ''
+    } catch (error) {
+      console.error('Error checking Docker container status:', error)
+      return false
+    }
+  }
+
   private getUserDir(userId: string) {
-    return path.join(app.makePath('/home/debian/data'), userId)
+    return path.join(app.makePath('/home/debian/data/'), userId)
   }
 
   private async ensureUserDirectories(userId: string) {
@@ -48,15 +63,14 @@ export default class FilesController {
 
   async list({ auth, response }: HttpContext) {
     const user = auth.user!
-    const userDir = this.getUserDir(user.id.toString())
-    const tempFileDir = path.join(userDir, 'temp_file')
 
     try {
-      const files = await fs.readdir(tempFileDir)
-      return response.ok(files)
+      const results = await ScanResult.query().where('userId', user.id).orderBy('createdAt', 'desc')
+
+      return response.ok(results)
     } catch (error) {
-      console.error(`Error listing files: ${error}`)
-      return response.ok([])
+      console.error(`Error listing analysis results: ${error}`)
+      return response.internalServerError('Unable to retrieve analysis results')
     }
   }
 
@@ -74,49 +88,19 @@ export default class FilesController {
     }
   }
 
-  async analyze({ auth, response }: HttpContext) {
+  async getAnalysisResult({ auth, params, response }: HttpContext) {
     const user = auth.user!
-    const userDir = this.getUserDir(user.id.toString())
-    const tempLogDir = path.join(userDir, 'temp_log')
 
     try {
-      // Lire tous les fichiers dans le répertoire temp_log
-      const files = await fs.readdir(tempLogDir)
+      const result = await ScanResult.query()
+        .where('userId', user.id)
+        .where('id', params.id)
+        .firstOrFail()
 
-      // Trier les fichiers par date de modification (du plus récent au plus ancien)
-      const sortedFiles = await Promise.all(
-        files.map(async (file) => {
-          const filePath = path.join(tempLogDir, file)
-          const stats = await fs.stat(filePath)
-          return { name: file, mtime: stats.mtime }
-        })
-      )
-      sortedFiles.sort((a, b) => b.mtime.getTime() - a.mtime.getTime())
-
-      // Prendre le fichier le plus récent
-      const mostRecentFile = sortedFiles[0]
-
-      if (!mostRecentFile) {
-        return response.notFound('No analysis log found')
-      }
-
-      const logFile = path.join(tempLogDir, mostRecentFile.name)
-      const analysisResult = await fs.readFile(logFile, 'utf-8')
-
-      // Extraire les informations pertinentes du résultat de l'analyse
-      const lines = analysisResult.split('\n')
-      const summary = lines[lines.length - 2] // La ligne d'avant-dernière contient généralement le résumé
-      const infected = summary.includes('Infected files: 1')
-
-      return response.ok({
-        result: analysisResult,
-        filename: mostRecentFile.name,
-        summary: summary,
-        infected: infected,
-      })
+      return response.ok(result)
     } catch (error) {
-      console.error('Error reading analysis result:', error)
-      return response.internalServerError('Analysis result not available')
+      console.error(`Error retrieving analysis result: ${error}`)
+      return response.notFound('Analysis result not found')
     }
   }
 
@@ -136,5 +120,91 @@ export default class FilesController {
       console.error(`Error deleting file: ${error}`)
       return response.notFound('File not found')
     }
+  }
+
+  async checkAnalysisResult({ auth, response }: HttpContext) {
+    const user = auth.user!
+    const userId = user.id.toString()
+    const userDir = this.getUserDir(userId)
+    const tempLogDir = path.join(userDir, 'temp_log')
+
+    try {
+      const isContainerRunning = await this.isDockerContainerRunning(userId)
+
+      if (isContainerRunning) {
+        return response.ok({ message: 'Analysis is still in progress.' })
+      }
+
+      const files = await fs.readdir(tempLogDir)
+      if (files.length === 0) {
+        return response.ok({ message: 'No analysis results found.' })
+      }
+
+      const sortedFiles = files.sort((a, b) => b.localeCompare(a))
+      const mostRecentFile = sortedFiles[0]
+      const logFile = path.join(tempLogDir, mostRecentFile)
+      const analysisResult = await fs.readFile(logFile, 'utf-8')
+
+      const parsedResult = this.parseAnalysisResult(analysisResult)
+      const scanResult = await ScanResult.create({
+        userId,
+        filename: mostRecentFile,
+        ...parsedResult,
+        fullLog: analysisResult,
+      })
+
+      await fs.rm(userDir, { recursive: true, force: true })
+
+      return response.ok({
+        message: 'Analysis completed and results stored.',
+        result: scanResult,
+      })
+    } catch (error) {
+      console.error(`Error checking analysis result for user ${userId}:`, error)
+      return response.internalServerError('Error checking analysis result')
+    }
+  }
+
+  private parseAnalysisResult(result: string) {
+    const lines = result.split('\n')
+    const parsedResult: any = {}
+
+    lines.forEach((line) => {
+      const [key, value] = line.split(':').map((s) => s.trim())
+      switch (key) {
+        case 'Known viruses':
+          parsedResult.knownViruses = Number.parseInt(value)
+          break
+        case 'Engine version':
+          parsedResult.engineVersion = value
+          break
+        case 'Scanned directories':
+          parsedResult.scannedDirectories = Number.parseInt(value)
+          break
+        case 'Scanned files':
+          parsedResult.scannedFiles = Number.parseInt(value)
+          break
+        case 'Infected files':
+          parsedResult.infectedFiles = Number.parseInt(value)
+          break
+        case 'Data scanned':
+          parsedResult.dataScanned = Number.parseFloat(value.split(' ')[0])
+          break
+        case 'Data read':
+          parsedResult.dataRead = Number.parseFloat(value.split(' ')[0])
+          break
+        case 'Time':
+          parsedResult.scanTime = Number.parseFloat(value.split(' ')[0])
+          break
+        case 'Start Date':
+          parsedResult.startDate = new Date(value)
+          break
+        case 'End Date':
+          parsedResult.endDate = new Date(value)
+          break
+      }
+    })
+
+    return parsedResult
   }
 }
