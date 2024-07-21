@@ -78,7 +78,7 @@ export default class FilesController {
     const user = auth.user!
     const userDir = this.getUserDir(user.id.toString())
     const tempLogDir = path.join(userDir, 'temp_log')
-    const logFile = path.join(tempLogDir, 'clamscan.log')
+    const logFile = path.join(tempLogDir, '*.log')
 
     try {
       const analysisResult = await fs.readFile(logFile, 'utf-8')
