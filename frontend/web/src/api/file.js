@@ -12,8 +12,13 @@ export async function getFiles() {
   return response.data;
 }
 
-export async function analyzeFile(fileName) {
-  const response = await axios.get(`/files/analyze/${fileName}`);
+export async function checkAnalysisResult() {
+  const response = await axios.get('/files/check-analysis');
+  return response.data;
+}
+
+export async function getAnalysisResult(id) {
+  const response = await axios.get(`/files/analysis/${id}`);
   return response.data;
 }
 

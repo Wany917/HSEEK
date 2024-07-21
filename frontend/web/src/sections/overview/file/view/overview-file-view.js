@@ -14,8 +14,13 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { useAuthContext } from 'src/auth/hooks';
-import { sendFile, getFiles, deleteFile, analyzeFile } from 'src/api/file';
+import {
+  sendFile,
+  getFiles,
+  deleteFile,
+  getAnalysisResult,
+  checkAnalysisResult,
+} from 'src/api/file';
 
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
@@ -31,8 +36,6 @@ export default function OverviewFileView() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResults, setAnalysisResults] = useState({});
-  
-  const { user } = useAuthContext();
 
   useEffect(() => {
     fetchFiles();
@@ -55,7 +58,7 @@ export default function OverviewFileView() {
   const handleDrop = useCallback(async (acceptedFiles) => {
     setIsLoading(true);
     try {
-      const uploadPromises = acceptedFiles.map(file => sendFile(file));
+      const uploadPromises = acceptedFiles.map((file) => sendFile(file));
       await Promise.all(uploadPromises);
       fetchFiles();
       setError(null);
@@ -94,9 +97,13 @@ export default function OverviewFileView() {
   const handleAnalyze = useCallback(async (fileName) => {
     setIsLoading(true);
     try {
-      const result = await analyzeFile(fileName);
-      setAnalysisResults(prev => ({ ...prev, [fileName]: result.result }));
-      setError(null);
+      const result = await checkAnalysisResult();
+      if (result.message === 'Analysis completed and results stored.') {
+        const analysisResult = await getAnalysisResult(result.result.id);
+        setAnalysisResults((prev) => ({ ...prev, [fileName]: analysisResult }));
+      } else {
+        setError('Analysis not completed yet. Please try again later.');
+      }
     } catch (err) {
       console.error('Error analyzing file:', err);
       setError('Failed to analyze file. Please try again.');
@@ -166,9 +173,20 @@ export default function OverviewFileView() {
                         {file}
                       </Typography>
                       {analysisResults[file] && (
-                        <Typography variant="body2" color="text.secondary">
-                          Analysis: {analysisResults[file]}
-                        </Typography>
+                        <Box>
+                          <Typography variant="body2" color="text.secondary">
+                            Known viruses: {analysisResults[file].knownViruses}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Scanned files: {analysisResults[file].scannedFiles}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Infected files: {analysisResults[file].infectedFiles}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Scan time: {analysisResults[file].scanTime} seconds
+                          </Typography>
+                        </Box>
                       )}
                     </CardContent>
                     <CardActions disableSpacing>
