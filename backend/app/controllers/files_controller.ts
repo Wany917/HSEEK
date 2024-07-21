@@ -41,24 +41,41 @@ export default class FilesController {
     const user = auth.user!
     const { file } = await request.validateUsing(uploadFileValidator)
     const userId = user.id.toString()
-
-    await this.ensureUserDirectories(userId)
-
     const userDir = this.getUserDir(userId)
-    const tempFileDir = path.join(userDir, 'temp_file')
-    const contDir = path.join(userDir, 'cont')
 
-    const fileName = `${cuid()}.${file.extname}`
-    await file.move(tempFileDir, { name: fileName })
+    try {
+      // Vérifier si le dossier utilisateur existe déjà
+      const dirExists = await fs
+        .access(userDir)
+        .then(() => true)
+        .catch(() => false)
+      if (dirExists) {
+        // Supprimer le dossier existant
+        await fs.rm(userDir, { recursive: true, force: true })
+        console.log(`Existing directory removed: ${userDir}`)
+      }
 
-    const tempFilePath = path.join(tempFileDir, fileName)
-    const contFilePath = path.join(contDir, fileName)
+      // Créer les nouveaux répertoires
+      await this.ensureUserDirectories(userId)
 
-    await fs.copyFile(tempFilePath, contFilePath)
+      const tempFileDir = path.join(userDir, 'temp_file')
+      const contDir = path.join(userDir, 'cont')
 
-    console.log(`File uploaded to: ${tempFilePath} and copied to: ${contFilePath}`)
+      const fileName = `${cuid()}.${file.extname}`
+      await file.move(tempFileDir, { name: fileName })
 
-    return response.created({ message: 'File uploaded successfully', path: tempFilePath })
+      const tempFilePath = path.join(tempFileDir, fileName)
+      const contFilePath = path.join(contDir, fileName)
+
+      await fs.copyFile(tempFilePath, contFilePath)
+
+      console.log(`File uploaded to: ${tempFilePath} and copied to: ${contFilePath}`)
+
+      return response.created({ message: 'File uploaded successfully', path: tempFilePath })
+    } catch (error) {
+      console.error('Error during file upload:', error)
+      return response.internalServerError('Failed to upload file')
+    }
   }
 
   async list({ auth, response }: HttpContext) {
@@ -122,55 +139,6 @@ export default class FilesController {
     }
   }
 
-  async checkAnalysisResult({ auth, response }: HttpContext) {
-    const user = auth.user!
-    const userId = user.id.toString()
-    const userDir = this.getUserDir(userId)
-    const tempLogDir = path.join(userDir, 'temp_log')
-
-    try {
-      const isContainerRunning = await this.isDockerContainerRunning(userId)
-
-      if (isContainerRunning) {
-        return response.ok({ message: 'Analysis is still in progress.' })
-      }
-
-      // Attendre un court instant pour s'assurer que le fichier de log est écrit
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      const files = await fs.readdir(tempLogDir)
-      if (files.length === 0) {
-        return response.ok({ message: 'No analysis results found.' })
-      }
-
-      const sortedFiles = files.sort((a, b) => b.localeCompare(a))
-      const mostRecentFile = sortedFiles[0]
-      const logFile = path.join(tempLogDir, mostRecentFile)
-      const analysisResult = await fs.readFile(logFile, 'utf-8')
-
-      const parsedResult = this.parseAnalysisResult(analysisResult)
-
-      // Stocker les résultats en utilisant le modèle
-      const scanResult = await ScanResult.create({
-        userId,
-        filename: mostRecentFile,
-        ...parsedResult,
-        fullLog: analysisResult,
-      })
-
-      // Nettoyer les répertoires
-      await fs.rm(userDir, { recursive: true, force: true })
-
-      return response.ok({
-        message: 'Analysis completed and results stored.',
-        result: scanResult,
-      })
-    } catch (error) {
-      console.error(`Error checking analysis result for user ${userId}:`, error)
-      return response.internalServerError('Error checking analysis result')
-    }
-  }
-
   private parseAnalysisResult(result: string) {
     const lines = result.split('\n')
     const parsedResult: any = {}
@@ -212,5 +180,76 @@ export default class FilesController {
     })
 
     return parsedResult
+  }
+
+  async checkAnalysisResult({ auth, response }: HttpContext) {
+    const user = auth.user!
+    const userId = user.id.toString()
+    const userDir = this.getUserDir(userId)
+    const tempLogDir = path.join(userDir, 'temp_log')
+
+    try {
+      // Vérifier si le conteneur Docker est toujours en cours d'exécution
+      const isContainerRunning = await this.isDockerContainerRunning(userId)
+
+      if (isContainerRunning) {
+        return response.ok({ message: 'Analysis is still in progress.' })
+      }
+
+      // Vérifier si le répertoire utilisateur existe
+      const dirExists = await fs
+        .access(userDir)
+        .then(() => true)
+        .catch(() => false)
+      if (!dirExists) {
+        return response.ok({
+          message: 'Analysis results not available. The directory may have been cleaned up.',
+        })
+      }
+
+      // Attendre un court instant pour s'assurer que le fichier de log est complètement écrit
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Lire les fichiers du répertoire de logs
+      const files = await fs.readdir(tempLogDir)
+      if (files.length === 0) {
+        return response.ok({ message: 'No analysis results found.' })
+      }
+
+      // Trier les fichiers par date de modification (le plus récent en premier)
+      const sortedFiles = await Promise.all(
+        files.map(async (file) => {
+          const filePath = path.join(tempLogDir, file)
+          const stats = await fs.stat(filePath)
+          return { name: file, mtime: stats.mtime }
+        })
+      )
+      sortedFiles.sort((a, b) => b.mtime.getTime() - a.mtime.getTime())
+
+      const mostRecentFile = sortedFiles[0].name
+      const logFile = path.join(tempLogDir, mostRecentFile)
+      const analysisResult = await fs.readFile(logFile, 'utf-8')
+
+      const parsedResult = this.parseAnalysisResult(analysisResult)
+
+      // Stocker les résultats en utilisant le modèle
+      const scanResult = await ScanResult.create({
+        userId,
+        filename: mostRecentFile,
+        ...parsedResult,
+        fullLog: analysisResult,
+      })
+
+      // Nettoyer les répertoires
+      await fs.rm(userDir, { recursive: true, force: true })
+
+      return response.ok({
+        message: 'Analysis completed and results stored.',
+        result: scanResult,
+      })
+    } catch (error) {
+      console.error(`Error checking analysis result for user ${userId}:`, error)
+      return response.internalServerError('Error checking analysis result')
+    }
   }
 }

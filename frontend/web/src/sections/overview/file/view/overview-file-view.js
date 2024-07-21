@@ -14,12 +14,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import {
-  sendFile,
-  getFiles,
-  deleteFile,
-  checkAnalysisResult,
-} from 'src/api/file';
+import { sendFile, getFiles, deleteFile, checkAnalysisResult } from 'src/api/file';
 
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
@@ -98,9 +93,9 @@ export default function OverviewFileView() {
     setError(null);
     try {
       const result = await checkAnalysisResult(fileName);
-      console.log('Analysis result:', result);  // Pour le débogage
+      console.log('Analysis result:', result); // Pour le débogage
       if (result && result.result) {
-        setAnalysisResults(prev => ({ ...prev, [fileName]: result.result }));
+        setAnalysisResults((prev) => ({ ...prev, [fileName]: result.result }));
       } else {
         setError('Analysis result not available yet.');
       }
@@ -171,7 +166,7 @@ export default function OverviewFileView() {
                       <Typography variant="subtitle2" noWrap>
                         {file}
                       </Typography>
-                      {analysisResults[file] && (
+                      {analysisResults[file] ? (
                         <Box>
                           <Typography variant="body2">
                             Known viruses: {analysisResults[file].knownViruses}
@@ -186,6 +181,10 @@ export default function OverviewFileView() {
                             Scan time: {analysisResults[file].scanTime} seconds
                           </Typography>
                         </Box>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          No analysis results available
+                        </Typography>
                       )}
                     </CardContent>
                     <CardActions disableSpacing>
