@@ -4,8 +4,6 @@ import { paths } from 'src/routes/paths';
 
 import { useTranslate } from 'src/locales';
 
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -100,6 +98,7 @@ export function useNavData() {
             title: t('user'),
             path: paths.dashboard.user.root,
             icon: ICONS.user,
+             roles: ['admin'],
             children: [
               // { title: t('profile'), path: paths.dashboard.user.root },
               // { title: t('cards'), path: paths.dashboard.user.cards },
@@ -138,20 +137,20 @@ export function useNavData() {
           // },
 
           // INVOICE
-          {
-            title: t('invoice'),
-            path: paths.dashboard.invoice.root,
-            icon: ICONS.invoice,
-            children: [
-              { title: t('list'), path: paths.dashboard.invoice.root },
-              {
-                title: t('details'),
-                path: paths.dashboard.invoice.demo.details,
-              },
-              { title: t('create'), path: paths.dashboard.invoice.new },
-              { title: t('edit'), path: paths.dashboard.invoice.demo.edit },
-            ],
-          },
+          // {
+          //   title: t('invoice'),
+          //   path: paths.dashboard.invoice.root,
+          //   icon: ICONS.invoice,
+          //   children: [
+          //     { title: t('list'), path: paths.dashboard.invoice.root },
+          //     {
+          //       title: t('details'),
+          //       path: paths.dashboard.invoice.demo.details,
+          //     },
+          //     { title: t('create'), path: paths.dashboard.invoice.new },
+          //     { title: t('edit'), path: paths.dashboard.invoice.demo.edit },
+          //   ],
+          // },
 
           // BLOG
           // {
@@ -193,11 +192,11 @@ export function useNavData() {
           // },
 
           // FILE MANAGER
-          {
-            title: t('file_manager'),
-            path: paths.dashboard.fileManager,
-            icon: ICONS.folder,
-          },
+          // {
+          //   title: t('file_manager'),
+          //   path: paths.dashboard.fileManager,
+          //   icon: ICONS.folder,
+          // },
 
           // MAIL
           // {
