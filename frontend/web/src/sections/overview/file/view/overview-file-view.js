@@ -94,8 +94,8 @@ export default function OverviewFileView() {
     try {
       const result = await checkAnalysisResult(fileName);
       console.log('Analysis result:', result); // Pour le débogage
-      if (result && result.result) {
-        setAnalysisResults((prev) => ({ ...prev, [fileName]: result.result }));
+      if (result) {
+        setAnalysisResults((prev) => ({ ...prev, [fileName]: result }));
       } else {
         setError('Analysis result not available yet.');
       }
@@ -106,7 +106,7 @@ export default function OverviewFileView() {
       setIsLoading(false);
     }
   }, []);
-  
+
   const renderStorageOverview = (
     <FileStorageOverview
       total={GB}
@@ -165,21 +165,21 @@ export default function OverviewFileView() {
                   <Card>
                     <CardContent>
                       <Typography variant="subtitle2" noWrap>
-                        {file}
+                        {file.filename}
                       </Typography>
-                      {analysisResults[file] ? (
+                      {analysisResults[file.filename] ? (
                         <Box>
                           <Typography variant="body2">
-                            Known viruses: {analysisResults[file].knownViruses}
+                            Known viruses: {analysisResults[file.filename].knownViruses}
                           </Typography>
                           <Typography variant="body2">
-                            Scanned files: {analysisResults[file].scannedFiles}
+                            Scanned files: {analysisResults[file.filename].scannedFiles}
                           </Typography>
                           <Typography variant="body2">
-                            Infected files: {analysisResults[file].infectedFiles}
+                            Infected files: {analysisResults[file.filename].infectedFiles}
                           </Typography>
                           <Typography variant="body2">
-                            Scan time: {analysisResults[file].scanTime} seconds
+                            Scan time: {analysisResults[file.filename].scanTime} seconds
                           </Typography>
                         </Box>
                       ) : (
@@ -189,13 +189,13 @@ export default function OverviewFileView() {
                       )}
                     </CardContent>
                     <CardActions disableSpacing>
-                      <IconButton aria-label="analyze" onClick={() => handleAnalyze(file)}>
+                      <IconButton aria-label="analyze" onClick={() => handleAnalyze(file.filename)}>
                         <Iconify icon="mdi:magnify" />
                       </IconButton>
-                      <IconButton aria-label="download" onClick={() => handleDownload(file)}>
+                      <IconButton aria-label="download" onClick={() => handleDownload(file.filename)}>
                         <Iconify icon="mdi:download" />
                       </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(file)}>
+                      <IconButton aria-label="delete" onClick={() => handleDelete(file.filename)}>
                         <Iconify icon="mdi:delete" />
                       </IconButton>
                     </CardActions>
