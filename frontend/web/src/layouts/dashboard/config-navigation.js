@@ -95,10 +95,10 @@ export function useNavData() {
         items: [
           // USER
           {
+            roles: ['admin'],
             title: t('user'),
             path: paths.dashboard.user.root,
             icon: ICONS.user,
-             roles: ['admin'],
             children: [
               // { title: t('profile'), path: paths.dashboard.user.root },
               // { title: t('cards'), path: paths.dashboard.user.cards },
