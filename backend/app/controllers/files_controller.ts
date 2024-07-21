@@ -157,7 +157,15 @@ export default class FilesController {
 
       return response.ok({
         message: 'Analysis completed and results stored.',
-        result: scanResult,
+        result: {
+          id: scanResult.id,
+          knownViruses: scanResult.knownViruses,
+          scannedFiles: scanResult.scannedFiles,
+          infectedFiles: scanResult.infectedFiles,
+          scanTime: scanResult.scanTime,
+          startDate: scanResult.startDate,
+          endDate: scanResult.endDate,
+        },
       })
     } catch (error) {
       console.error(`Error checking analysis result for user ${userId}:`, error)

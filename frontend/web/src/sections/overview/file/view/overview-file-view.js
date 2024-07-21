@@ -18,7 +18,6 @@ import {
   sendFile,
   getFiles,
   deleteFile,
-  getAnalysisResult,
   checkAnalysisResult,
 } from 'src/api/file';
 
@@ -97,16 +96,11 @@ export default function OverviewFileView() {
   const handleAnalyze = useCallback(async (fileName) => {
     setIsLoading(true);
     try {
-      const result = await checkAnalysisResult();
-      if (result.message === 'Analysis completed and results stored.') {
-        const analysisResult = await getAnalysisResult(result.result.id);
-        setAnalysisResults((prev) => ({ ...prev, [fileName]: analysisResult }));
-      } else {
-        setError('Analysis not completed yet. Please try again later.');
-      }
+      const result = await checkAnalysisResult(fileName);
+      setAnalysisResults(prev => ({ ...prev, [fileName]: result }));
     } catch (err) {
       console.error('Error analyzing file:', err);
-      setError('Failed to analyze file. Please try again.');
+      setError('Failed to analyze file or analysis timed out. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -174,16 +168,16 @@ export default function OverviewFileView() {
                       </Typography>
                       {analysisResults[file] && (
                         <Box>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography variant="body2">
                             Known viruses: {analysisResults[file].knownViruses}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography variant="body2">
                             Scanned files: {analysisResults[file].scannedFiles}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography variant="body2">
                             Infected files: {analysisResults[file].infectedFiles}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography variant="body2">
                             Scan time: {analysisResults[file].scanTime} seconds
                           </Typography>
                         </Box>
