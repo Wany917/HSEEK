@@ -157,7 +157,7 @@ export default class FilesController {
           parsedResult.scannedDirectories = Number.parseInt(value)
           break
         case 'Scanned files':
-          parsedResult.scannedFiles = Number.parseInt(value)
+          parsedResult.scannedFiles = Number.parseInt(value) - 2
           break
         case 'Infected files':
           parsedResult.infectedFiles = Number.parseInt(value)
