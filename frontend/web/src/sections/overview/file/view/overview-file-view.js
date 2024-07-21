@@ -106,6 +106,7 @@ export default function OverviewFileView() {
       setIsLoading(false);
     }
   }, []);
+  
   const renderStorageOverview = (
     <FileStorageOverview
       total={GB}

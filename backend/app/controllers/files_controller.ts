@@ -15,7 +15,11 @@ export default class FilesController {
   private async isDockerContainerRunning(userId: string): Promise<boolean> {
     try {
       const { stdout } = await execAsync(`docker ps -q --filter name=c1_user_${userId}`)
-      return stdout.trim() !== ''
+      if (stdout.trim() === '') {
+        return true
+      } else {
+        return false
+      }
     } catch (error) {
       console.error('Error checking Docker container status:', error)
       return false
@@ -102,7 +106,7 @@ export default class FilesController {
       await fs.access(filePath)
       return response.download(filePath)
     } catch {
-      return response.notFound('File not found')
+      return response.notFound('File not found 1')
     }
   }
 
@@ -136,7 +140,7 @@ export default class FilesController {
       return response.ok({ message: 'File deleted successfully' })
     } catch (error) {
       console.error(`Error deleting file: ${error}`)
-      return response.notFound('File not found')
+      return response.notFound('File not found 2')
     }
   }
 
@@ -221,7 +225,7 @@ export default class FilesController {
 
       // Attendre un court instant pour s'assurer que le fichier de log est complètement écrit
       console.log('[checkAnalysisResult] Waiting 1 second for log file to be written')
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 5000))
 
       // Lire les fichiers du répertoire de logs
       const files = await fs.readdir(tempLogDir)
