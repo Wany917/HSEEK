@@ -18,7 +18,7 @@ export async function getFiles() {
 
 export async function checkAnalysisResult(filename) {
   console.log('Checking analysis result for:', filename);
-  const checkInterval = 5000; // 5 seconds
+  const checkInterval = 20000; // 5 seconds
   const maxDuration = 60000; // 1 minute total
   const startTime = Date.now();
 
