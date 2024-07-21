@@ -65,13 +65,12 @@ export default function JwtRegisterView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await register?.(data.email,data.password,data.username);
-
+      await register(data.email, data.password, data.username);
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
-      console.error(error);
+      console.error('Registration error:', error);
       reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
+      setErrorMsg(error.response?.data?.error || error.message || 'An error occurred during registration');
     }
   });
 

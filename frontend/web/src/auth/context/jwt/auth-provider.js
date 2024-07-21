@@ -101,51 +101,78 @@ export function AuthProvider({ children }) {
 
   // LOGIN
   const login = useCallback(async (email, password) => {
-    const data = {
-      email,
-      password,
-    };
-
-    const response = await axios.post(endpoints.auth.login, data);
-
-    const { accessToken, user } = response.data;
-
-    setSession(accessToken);
-
-    dispatch({
-      type: 'LOGIN',
-      payload: {
-        user: {
-          ...user,
-          accessToken,
-        },
-      },
-    });
+    try {
+      console.log('Attempting login with:', { email, password });
+      const response = await axios.post(endpoints.auth.login, {
+        email,
+        password,
+      });
+  
+      const { accessToken, user } = response.data;
+  
+      if (accessToken && user) {
+        setSession(accessToken);
+  
+        dispatch({
+          type: 'LOGIN',
+          payload: {
+            user: {
+              ...user,
+              accessToken,
+            },
+          },
+        });
+  
+        console.log('Login successful');
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error) {
+      console.error('Login error in auth provider:', error);
+      throw error;
+    }
   }, []);
 
   // REGISTER
   const register = useCallback(async (email, password, username) => {
-    const data = {
-      email,
-      password,
-      username,
-    };
-
-    const response = await axios.post(endpoints.auth.register, data);
-
-    const { accessToken, user } = response.data;
-
-    sessionStorage.setItem(STORAGE_KEY, accessToken);
-
-    dispatch({
-      type: 'REGISTER',
-      payload: {
-        user: {
-          ...user,
-          accessToken,
-        },
-      },
-    });
+    try {
+      const data = {
+        email,
+        password,
+        username,
+      };
+  
+      console.log('Sending registration request with data:', data);
+  
+      const response = await axios.post(endpoints.auth.register, data);
+  
+      console.log('Registration response:', response);
+  
+      if (response.data && response.data.accessToken) {
+        const { accessToken } = response.data;
+        const user = response.data.data; // Les données utilisateur sont dans response.data.data
+  
+        setSession(accessToken);
+  
+        dispatch({
+          type: 'REGISTER',
+          payload: {
+            user: {
+              ...user,
+              accessToken,
+            },
+          },
+        });
+  
+        console.log('Registration successful');
+      } else {
+        console.error('Unexpected response format:', response.data);
+        throw new Error('Invalid response from server');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
   }, []);
 
   // LOGOUT

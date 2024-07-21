@@ -27,14 +27,31 @@ export default class UsersController {
   async login({ request, response, auth }: HttpContext) {
     try {
       const { email, password } = await request.validateUsing(loginValidator)
-      const user = await User.verifyCredentials(email, password)
+      console.log('Login attempt for:', email)
+
+      const user = await User.findBy('email', email)
+      if (!user) {
+        console.log('User not found for email:', email)
+        return response.status(401).send({ error: 'Login failed', details: 'User not found' })
+      }
+
+      const isPasswordValid = await User.verifyCredentials(email, password)
+      console.log('Password verification result:', isPasswordValid)
+
+      if (!isPasswordValid) {
+        return response.status(401).send({ error: 'Login failed', details: 'Invalid password' })
+      }
+
       const token = await auth.use('jwt').generate(user)
+      console.log('Token generated successfully')
 
       return response.ok({
         accessToken: token.token,
+        user: user,
       })
     } catch (error) {
-      return response.status(401).send({ error: 'Login failed', details: error.messages })
+      console.error('Login error:', error)
+      return response.status(401).send({ error: 'Login failed', details: error.message })
     }
   }
 

@@ -1,26 +1,23 @@
-import axios from 'axios';
+import axios from 'src/utils/axios';
 
-export const sendFile = async (file) => {
+export async function sendFile(file) {
   const formData = new FormData();
   formData.append('file', file);
-
-  const accessToken = sessionStorage.getItem('accessToken');
-
-  const response = await axios.post('http://localhost:3333/files', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const response = await axios.post('/files', formData);
   return response.data;
-};
+}
 
-export const getFiles = async () => {
-  const accessToken = sessionStorage.getItem('accessToken');
-  const response = await axios.get('http://localhost:3333/files', {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+export async function getFiles() {
+  const response = await axios.get('/files');
   return response.data;
-};
+}
+
+export async function analyzeFile(fileName) {
+  const response = await axios.get(`/files/analyze/${fileName}`);
+  return response.data;
+}
+
+export async function deleteFile(fileName) {
+  const response = await axios.delete(`/files/${fileName}`);
+  return response.data;
+}

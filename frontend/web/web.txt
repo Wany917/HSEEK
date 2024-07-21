@@ -1,0 +1,1515 @@
+web
+├── .editorconfig
+├── .env
+├── .eslintignore
+├── .eslintrc
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
+├── electron.js
+├── jsconfig.json
+├── next.config.js
+├── package-lock.json
+├── package.json
+├── pnpm-lock.yaml
+├── public
+│   ├── assets
+│   │   ├── background
+│   │   │   ├── overlay_1.svg
+│   │   │   ├── overlay_2.jpg
+│   │   │   ├── overlay_3.jpg
+│   │   │   └── overlay_4.jpg
+│   │   ├── cyan-blur.png
+│   │   ├── icons
+│   │   │   ├── app
+│   │   │   │   ├── ic_chrome.svg
+│   │   │   │   ├── ic_drive.svg
+│   │   │   │   ├── ic_dropbox.svg
+│   │   │   │   ├── ic_evernote.svg
+│   │   │   │   ├── ic_github.svg
+│   │   │   │   └── ic_onedrive.svg
+│   │   │   ├── auth
+│   │   │   │   ├── ic_amplify.svg
+│   │   │   │   ├── ic_auth0.svg
+│   │   │   │   ├── ic_firebase.svg
+│   │   │   │   ├── ic_jwt.svg
+│   │   │   │   └── ic_supabase.svg
+│   │   │   ├── brands
+│   │   │   │   ├── ic_brand_amazon.svg
+│   │   │   │   ├── ic_brand_hbo.svg
+│   │   │   │   ├── ic_brand_ibm.svg
+│   │   │   │   ├── ic_brand_lya.svg
+│   │   │   │   ├── ic_brand_netflix.svg
+│   │   │   │   └── ic_brand_spotify.svg
+│   │   │   ├── components
+│   │   │   │   ├── ic_accordion.svg
+│   │   │   │   ├── ic_alert.svg
+│   │   │   │   ├── ic_autocomplete.svg
+│   │   │   │   ├── ic_avatar.svg
+│   │   │   │   ├── ic_badge.svg
+│   │   │   │   ├── ic_breadcrumbs.svg
+│   │   │   │   ├── ic_buttons.svg
+│   │   │   │   ├── ic_checkbox.svg
+│   │   │   │   ├── ic_chip.svg
+│   │   │   │   ├── ic_colors.svg
+│   │   │   │   ├── ic_data_grid.svg
+│   │   │   │   ├── ic_dialog.svg
+│   │   │   │   ├── ic_extra_animate.svg
+│   │   │   │   ├── ic_extra_carousel.svg
+│   │   │   │   ├── ic_extra_chart.svg
+│   │   │   │   ├── ic_extra_copy_to_clipboard.svg
+│   │   │   │   ├── ic_extra_editor.svg
+│   │   │   │   ├── ic_extra_form_validation.svg
+│   │   │   │   ├── ic_extra_image.svg
+│   │   │   │   ├── ic_extra_label.svg
+│   │   │   │   ├── ic_extra_lightbox.svg
+│   │   │   │   ├── ic_extra_map.svg
+│   │   │   │   ├── ic_extra_markdown.svg
+│   │   │   │   ├── ic_extra_mega_menu.svg
+│   │   │   │   ├── ic_extra_multi_language.svg
+│   │   │   │   ├── ic_extra_navigation_bar.svg
+│   │   │   │   ├── ic_extra_organization_chart.svg
+│   │   │   │   ├── ic_extra_scroll.svg
+│   │   │   │   ├── ic_extra_scroll_progress.svg
+│   │   │   │   ├── ic_extra_snackbar.svg
+│   │   │   │   ├── ic_extra_text_max_line.svg
+│   │   │   │   ├── ic_extra_upload.svg
+│   │   │   │   ├── ic_extra_walktour.svg
+│   │   │   │   ├── ic_grid.svg
+│   │   │   │   ├── ic_icons.svg
+│   │   │   │   ├── ic_list.svg
+│   │   │   │   ├── ic_menu.svg
+│   │   │   │   ├── ic_pagination.svg
+│   │   │   │   ├── ic_pickers.svg
+│   │   │   │   ├── ic_popover.svg
+│   │   │   │   ├── ic_progress.svg
+│   │   │   │   ├── ic_radio_button.svg
+│   │   │   │   ├── ic_rating.svg
+│   │   │   │   ├── ic_shadows.svg
+│   │   │   │   ├── ic_slider.svg
+│   │   │   │   ├── ic_stepper.svg
+│   │   │   │   ├── ic_switch.svg
+│   │   │   │   ├── ic_table.svg
+│   │   │   │   ├── ic_tabs.svg
+│   │   │   │   ├── ic_textfield.svg
+│   │   │   │   ├── ic_timeline.svg
+│   │   │   │   ├── ic_tooltip.svg
+│   │   │   │   ├── ic_transfer_list.svg
+│   │   │   │   ├── ic_tree_view.svg
+│   │   │   │   └── ic_typography.svg
+│   │   │   ├── empty
+│   │   │   │   ├── ic_cart.svg
+│   │   │   │   ├── ic_content.svg
+│   │   │   │   ├── ic_email_disabled.svg
+│   │   │   │   ├── ic_email_selected.svg
+│   │   │   │   ├── ic_folder_empty.svg
+│   │   │   │   └── ic_mail.svg
+│   │   │   ├── faqs
+│   │   │   │   ├── ic_account.svg
+│   │   │   │   ├── ic_assurances.svg
+│   │   │   │   ├── ic_delivery.svg
+│   │   │   │   ├── ic_package.svg
+│   │   │   │   ├── ic_payment.svg
+│   │   │   │   └── ic_refund.svg
+│   │   │   ├── files
+│   │   │   │   ├── ic_ai.svg
+│   │   │   │   ├── ic_audio.svg
+│   │   │   │   ├── ic_document.svg
+│   │   │   │   ├── ic_excel.svg
+│   │   │   │   ├── ic_file.svg
+│   │   │   │   ├── ic_folder.svg
+│   │   │   │   ├── ic_img.svg
+│   │   │   │   ├── ic_js.svg
+│   │   │   │   ├── ic_pdf.svg
+│   │   │   │   ├── ic_power_point.svg
+│   │   │   │   ├── ic_pts.svg
+│   │   │   │   ├── ic_txt.svg
+│   │   │   │   ├── ic_video.svg
+│   │   │   │   ├── ic_word.svg
+│   │   │   │   └── ic_zip.svg
+│   │   │   ├── glass
+│   │   │   │   ├── ic_glass_bag.png
+│   │   │   │   ├── ic_glass_buy.png
+│   │   │   │   ├── ic_glass_message.png
+│   │   │   │   └── ic_glass_users.png
+│   │   │   ├── home
+│   │   │   │   ├── ic_design.svg
+│   │   │   │   ├── ic_development.svg
+│   │   │   │   └── ic_make_brand.svg
+│   │   │   ├── navbar
+│   │   │   │   ├── ic_analytics.svg
+│   │   │   │   ├── ic_banking.svg
+│   │   │   │   ├── ic_blank.svg
+│   │   │   │   ├── ic_blog.svg
+│   │   │   │   ├── ic_booking.svg
+│   │   │   │   ├── ic_calendar.svg
+│   │   │   │   ├── ic_chat.svg
+│   │   │   │   ├── ic_dashboard.svg
+│   │   │   │   ├── ic_disabled.svg
+│   │   │   │   ├── ic_ecommerce.svg
+│   │   │   │   ├── ic_external.svg
+│   │   │   │   ├── ic_file.svg
+│   │   │   │   ├── ic_folder.svg
+│   │   │   │   ├── ic_invoice.svg
+│   │   │   │   ├── ic_job.svg
+│   │   │   │   ├── ic_kanban.svg
+│   │   │   │   ├── ic_label.svg
+│   │   │   │   ├── ic_lock.svg
+│   │   │   │   ├── ic_mail.svg
+│   │   │   │   ├── ic_menu_item.svg
+│   │   │   │   ├── ic_order.svg
+│   │   │   │   ├── ic_product.svg
+│   │   │   │   ├── ic_tour.svg
+│   │   │   │   └── ic_user.svg
+│   │   │   ├── notification
+│   │   │   │   ├── ic_chat.svg
+│   │   │   │   ├── ic_delivery.svg
+│   │   │   │   ├── ic_mail.svg
+│   │   │   │   └── ic_order.svg
+│   │   │   ├── platforms
+│   │   │   │   ├── ic_figma.svg
+│   │   │   │   ├── ic_js.svg
+│   │   │   │   ├── ic_nextjs.svg
+│   │   │   │   ├── ic_ts.svg
+│   │   │   │   └── ic_vite.svg
+│   │   │   └── setting
+│   │   │       ├── ic_align_left.svg
+│   │   │       ├── ic_align_right.svg
+│   │   │       ├── ic_collapse.svg
+│   │   │       ├── ic_contrast.svg
+│   │   │       ├── ic_contrast_bold.svg
+│   │   │       ├── ic_exit_full_screen.svg
+│   │   │       ├── ic_full_screen.svg
+│   │   │       ├── ic_moon.svg
+│   │   │       ├── ic_setting.svg
+│   │   │       └── ic_sun.svg
+│   │   ├── illustrations
+│   │   │   ├── characters
+│   │   │   │   ├── character_1.png
+│   │   │   │   ├── character_10.png
+│   │   │   │   ├── character_11.png
+│   │   │   │   ├── character_2.png
+│   │   │   │   ├── character_3.png
+│   │   │   │   ├── character_4.png
+│   │   │   │   ├── character_5.png
+│   │   │   │   ├── character_6.png
+│   │   │   │   ├── character_7.png
+│   │   │   │   ├── character_8.png
+│   │   │   │   └── character_9.png
+│   │   │   └── illustration_dashboard.png
+│   │   ├── images
+│   │   │   ├── about
+│   │   │   │   ├── hero.jpg
+│   │   │   │   ├── testimonials.jpg
+│   │   │   │   ├── vision.jpg
+│   │   │   │   ├── what_1.png
+│   │   │   │   └── what_2.png
+│   │   │   ├── contact
+│   │   │   │   └── hero.jpg
+│   │   │   ├── faqs
+│   │   │   │   └── hero.jpg
+│   │   │   └── home
+│   │   │       ├── clean
+│   │   │       │   ├── page_1.webp
+│   │   │       │   ├── page_10.webp
+│   │   │       │   ├── page_2.webp
+│   │   │       │   ├── page_3.webp
+│   │   │       │   ├── page_4.webp
+│   │   │       │   ├── page_5.webp
+│   │   │       │   ├── page_6.webp
+│   │   │       │   ├── page_7.webp
+│   │   │       │   ├── page_8.webp
+│   │   │       │   └── page_9.webp
+│   │   │       ├── darkmode.webp
+│   │   │       ├── for_designer.webp
+│   │   │       ├── hero
+│   │   │       │   ├── dark_1.webp
+│   │   │       │   ├── dark_2.webp
+│   │   │       │   ├── light_1.webp
+│   │   │       │   └── light_2.webp
+│   │   │       ├── presets
+│   │   │       │   ├── block_blue.webp
+│   │   │       │   ├── block_cyan.webp
+│   │   │       │   ├── block_default.webp
+│   │   │       │   ├── block_orange.webp
+│   │   │       │   ├── block_purple.webp
+│   │   │       │   ├── block_red.webp
+│   │   │       │   ├── chart_blue.webp
+│   │   │       │   ├── chart_cyan.webp
+│   │   │       │   ├── chart_default.webp
+│   │   │       │   ├── chart_orange.webp
+│   │   │       │   ├── chart_purple.webp
+│   │   │       │   ├── chart_red.webp
+│   │   │       │   ├── grid.webp
+│   │   │       │   ├── screen_blue.webp
+│   │   │       │   ├── screen_cyan.webp
+│   │   │       │   ├── screen_default.webp
+│   │   │       │   ├── screen_orange.webp
+│   │   │       │   ├── screen_purple.webp
+│   │   │       │   ├── screen_red.webp
+│   │   │       │   ├── sidebar_blue.webp
+│   │   │       │   ├── sidebar_cyan.webp
+│   │   │       │   ├── sidebar_default.webp
+│   │   │       │   ├── sidebar_orange.webp
+│   │   │       │   ├── sidebar_purple.webp
+│   │   │       │   └── sidebar_red.webp
+│   │   │       ├── rocket.webp
+│   │   │       └── zone_landing.webp
+│   │   ├── placeholder.svg
+│   │   ├── red-blur.png
+│   │   └── transparent.png
+│   ├── data
+│   │   └── 1
+│   │       └── clyak05qe0000nkl5ccr2hh8i.pdf
+│   ├── favicon
+│   │   ├── android-chrome-192x192.jpeg
+│   │   ├── android-chrome-512x512.jpeg
+│   │   ├── apple-touche-icon.jpeg
+│   │   ├── favicon-32x32.jpeg
+│   │   └── favicon.ico
+│   ├── fonts
+│   │   ├── CircularStd-Bold.otf
+│   │   ├── CircularStd-Book.otf
+│   │   ├── CircularStd-Medium.otf
+│   │   ├── index.css
+│   │   ├── Roboto-Bold.ttf
+│   │   └── Roboto-Regular.ttf
+│   ├── logo
+│   │   ├── logo_full.svg
+│   │   ├── logo_single.jpeg
+│   │   ├── logo_single.png
+│   │   └── logo_single.svg
+│   ├── manifest.json
+│   ├── robots.txt
+│   └── _redirects
+├── README.md
+└── src
+    ├── api
+    │   ├── calendar.js
+    │   ├── chat.js
+    │   ├── file.js
+    │   ├── invoice.js
+    │   ├── kanban.js
+    │   ├── mail.js
+    │   ├── product.js
+    │   └── user.js
+    ├── app
+    │   ├── about-us
+    │   │   ├── layout.js
+    │   │   └── page.js
+    │   ├── auth
+    │   │   └── jwt
+    │   │       ├── login
+    │   │       │   ├── layout.js
+    │   │       │   └── page.js
+    │   │       └── register
+    │   │           ├── layout.js
+    │   │           └── page.js
+    │   ├── coming-soon
+    │   │   ├── layout.js
+    │   │   └── page.js
+    │   ├── components
+    │   │   ├── extra
+    │   │   │   ├── animate
+    │   │   │   │   └── page.js
+    │   │   │   ├── carousel
+    │   │   │   │   └── page.js
+    │   │   │   ├── chart
+    │   │   │   │   └── page.js
+    │   │   │   ├── copy-to-clipboard
+    │   │   │   │   └── page.js
+    │   │   │   ├── editor
+    │   │   │   │   └── page.js
+    │   │   │   ├── form-validation
+    │   │   │   │   └── page.js
+    │   │   │   ├── image
+    │   │   │   │   └── page.js
+    │   │   │   ├── label
+    │   │   │   │   └── page.js
+    │   │   │   ├── lightbox
+    │   │   │   │   └── page.js
+    │   │   │   ├── map
+    │   │   │   │   └── page.js
+    │   │   │   ├── markdown
+    │   │   │   │   └── page.js
+    │   │   │   ├── mega-menu
+    │   │   │   │   └── page.js
+    │   │   │   ├── multi-language
+    │   │   │   │   └── page.js
+    │   │   │   ├── navigation-bar
+    │   │   │   │   └── page.js
+    │   │   │   ├── organization-chart
+    │   │   │   │   └── page.js
+    │   │   │   ├── scroll
+    │   │   │   │   └── page.js
+    │   │   │   ├── scroll-progress
+    │   │   │   │   └── page.js
+    │   │   │   ├── snackbar
+    │   │   │   │   └── page.js
+    │   │   │   ├── text-max-line
+    │   │   │   │   └── page.js
+    │   │   │   ├── upload
+    │   │   │   │   └── page.js
+    │   │   │   └── walktour
+    │   │   │       └── page.js
+    │   │   ├── foundation
+    │   │   │   ├── colors
+    │   │   │   │   └── page.js
+    │   │   │   ├── grid
+    │   │   │   │   └── page.js
+    │   │   │   ├── icons
+    │   │   │   │   └── page.js
+    │   │   │   ├── shadows
+    │   │   │   │   └── page.js
+    │   │   │   └── typography
+    │   │   │       └── page.js
+    │   │   ├── layout.js
+    │   │   ├── mui
+    │   │   │   ├── accordion
+    │   │   │   │   └── page.js
+    │   │   │   ├── alert
+    │   │   │   │   └── page.js
+    │   │   │   ├── autocomplete
+    │   │   │   │   └── page.js
+    │   │   │   ├── avatar
+    │   │   │   │   └── page.js
+    │   │   │   ├── badge
+    │   │   │   │   └── page.js
+    │   │   │   ├── breadcrumbs
+    │   │   │   │   └── page.js
+    │   │   │   ├── buttons
+    │   │   │   │   └── page.js
+    │   │   │   ├── checkbox
+    │   │   │   │   └── page.js
+    │   │   │   ├── chip
+    │   │   │   │   └── page.js
+    │   │   │   ├── data-grid
+    │   │   │   │   └── page.js
+    │   │   │   ├── dialog
+    │   │   │   │   └── page.js
+    │   │   │   ├── list
+    │   │   │   │   └── page.js
+    │   │   │   ├── menu
+    │   │   │   │   └── page.js
+    │   │   │   ├── pagination
+    │   │   │   │   └── page.js
+    │   │   │   ├── pickers
+    │   │   │   │   └── page.js
+    │   │   │   ├── popover
+    │   │   │   │   └── page.js
+    │   │   │   ├── progress
+    │   │   │   │   └── page.js
+    │   │   │   ├── radio-button
+    │   │   │   │   └── page.js
+    │   │   │   ├── rating
+    │   │   │   │   └── page.js
+    │   │   │   ├── slider
+    │   │   │   │   └── page.js
+    │   │   │   ├── stepper
+    │   │   │   │   └── page.js
+    │   │   │   ├── switch
+    │   │   │   │   └── page.js
+    │   │   │   ├── table
+    │   │   │   │   └── page.js
+    │   │   │   ├── tabs
+    │   │   │   │   └── page.js
+    │   │   │   ├── textfield
+    │   │   │   │   └── page.js
+    │   │   │   ├── timeline
+    │   │   │   │   └── page.js
+    │   │   │   ├── tooltip
+    │   │   │   │   └── page.js
+    │   │   │   └── transfer-list
+    │   │   │       └── page.js
+    │   │   └── page.js
+    │   ├── contact-us
+    │   │   ├── layout.js
+    │   │   └── page.js
+    │   ├── dashboard
+    │   │   ├── analytics
+    │   │   │   └── page.js
+    │   │   ├── file
+    │   │   │   └── page.js
+    │   │   ├── file-manager
+    │   │   │   └── page.js
+    │   │   ├── invoice
+    │   │   │   ├── new
+    │   │   │   │   └── page.js
+    │   │   │   ├── page.js
+    │   │   │   └── [id]
+    │   │   │       ├── edit
+    │   │   │       │   └── page.js
+    │   │   │       └── page.js
+    │   │   ├── layout.js
+    │   │   ├── loading.js
+    │   │   ├── page.js
+    │   │   └── user
+    │   │       ├── account
+    │   │       │   └── page.js
+    │   │       ├── cards
+    │   │       │   └── page.js
+    │   │       ├── list
+    │   │       │   └── page.js
+    │   │       ├── new
+    │   │       │   └── page.js
+    │   │       ├── page.js
+    │   │       └── [id]
+    │   │           └── edit
+    │   │               └── page.js
+    │   ├── error
+    │   │   ├── 403
+    │   │   │   └── page.js
+    │   │   ├── 404
+    │   │   │   └── page.js
+    │   │   └── 500
+    │   │       └── page.js
+    │   ├── faqs
+    │   │   ├── layout.js
+    │   │   └── page.js
+    │   ├── layout.js
+    │   ├── loading.js
+    │   ├── maintenance
+    │   │   ├── layout.js
+    │   │   └── page.js
+    │   ├── not-found.js
+    │   ├── page.js
+    │   ├── payment
+    │   │   ├── layout.js
+    │   │   └── page.js
+    │   ├── post
+    │   │   ├── layout.js
+    │   │   ├── page.js
+    │   │   └── [title]
+    │   │       └── page.js
+    │   ├── pricing
+    │   │   ├── layout.js
+    │   │   └── page.js
+    │   └── product
+    │       ├── checkout
+    │       │   └── page.js
+    │       ├── layout.js
+    │       ├── page.js
+    │       └── [id]
+    │           └── page.js
+    ├── assets
+    │   ├── data
+    │   │   ├── countries.js
+    │   │   └── index.js
+    │   ├── icons
+    │   │   ├── email-inbox-icon.js
+    │   │   ├── index.js
+    │   │   ├── new-password-icon.js
+    │   │   ├── password-icon.js
+    │   │   ├── plan-free-icon.js
+    │   │   ├── plan-premium-icon.js
+    │   │   ├── plan-starter-icon.js
+    │   │   └── sent-icon.js
+    │   └── illustrations
+    │       ├── avatar-shape.js
+    │       ├── background-shape.js
+    │       ├── booking-illustration.js
+    │       ├── check-in-illustration.js
+    │       ├── check-out-illustration.js
+    │       ├── coming-soon-illustration.js
+    │       ├── forbidden-illustration.js
+    │       ├── index.js
+    │       ├── maintenance-illustration.js
+    │       ├── motivation-illustration.js
+    │       ├── order-complete-illustration.js
+    │       ├── page-not-found-illustration.js
+    │       ├── seo-illustration.js
+    │       ├── sever-error-illustration.js
+    │       ├── upgrade-storage-illustration.js
+    │       └── upload-illustration.js
+    ├── auth
+    │   ├── context
+    │   │   └── jwt
+    │   │       ├── auth-consumer.js
+    │   │       ├── auth-context.js
+    │   │       ├── auth-provider.js
+    │   │       ├── index.js
+    │   │       └── utils.js
+    │   ├── guard
+    │   │   ├── auth-guard.js
+    │   │   ├── guest-guard.js
+    │   │   ├── index.js
+    │   │   └── role-based-guard.js
+    │   └── hooks
+    │       ├── index.js
+    │       └── use-auth-context.js
+    ├── components
+    │   ├── animate
+    │   │   ├── index.js
+    │   │   ├── motion-container.js
+    │   │   ├── motion-lazy.js
+    │   │   ├── motion-viewport.js
+    │   │   └── variants
+    │   │       ├── actions.js
+    │   │       ├── background.js
+    │   │       ├── bounce.js
+    │   │       ├── container.js
+    │   │       ├── fade.js
+    │   │       ├── flip.js
+    │   │       ├── index.js
+    │   │       ├── path.js
+    │   │       ├── rotate.js
+    │   │       ├── scale.js
+    │   │       ├── slide.js
+    │   │       ├── transition.js
+    │   │       └── zoom.js
+    │   ├── carousel
+    │   │   ├── arrow-icons.js
+    │   │   ├── carousel-arrow-index.js
+    │   │   ├── carousel-arrows.js
+    │   │   ├── carousel-dots.js
+    │   │   ├── index.js
+    │   │   └── use-carousel.js
+    │   ├── chart
+    │   │   ├── chart.js
+    │   │   ├── index.js
+    │   │   └── use-chart.js
+    │   ├── color-utils
+    │   │   ├── color-picker.js
+    │   │   ├── color-preview.js
+    │   │   └── index.js
+    │   ├── country-select
+    │   │   ├── country-select.js
+    │   │   └── index.js
+    │   ├── custom-breadcrumbs
+    │   │   ├── custom-breadcrumbs.js
+    │   │   ├── index.js
+    │   │   └── link-item.js
+    │   ├── custom-date-range-picker
+    │   │   ├── custom-date-range-picker.js
+    │   │   ├── index.js
+    │   │   ├── use-date-range-picker.js
+    │   │   └── utils.js
+    │   ├── custom-dialog
+    │   │   ├── confirm-dialog.js
+    │   │   └── index.js
+    │   ├── custom-popover
+    │   │   ├── custom-popover.js
+    │   │   ├── index.js
+    │   │   ├── styles.js
+    │   │   ├── use-popover.js
+    │   │   └── utils.js
+    │   ├── editor
+    │   │   ├── editor.js
+    │   │   ├── index.js
+    │   │   ├── styles.js
+    │   │   └── toolbar.js
+    │   ├── empty-content
+    │   │   ├── empty-content.js
+    │   │   └── index.js
+    │   ├── file-thumbnail
+    │   │   ├── download-button.js
+    │   │   ├── file-thumbnail.js
+    │   │   ├── index.js
+    │   │   └── utils.js
+    │   ├── hook-form
+    │   │   ├── form-provider.js
+    │   │   ├── index.js
+    │   │   ├── rhf-autocomplete.js
+    │   │   ├── rhf-checkbox.js
+    │   │   ├── rhf-code.js
+    │   │   ├── rhf-editor.js
+    │   │   ├── rhf-radio-group.js
+    │   │   ├── rhf-select.js
+    │   │   ├── rhf-slider.js
+    │   │   ├── rhf-switch.js
+    │   │   ├── rhf-text-field.js
+    │   │   └── rhf-upload.js
+    │   ├── iconify
+    │   │   ├── iconify.js
+    │   │   └── index.js
+    │   ├── image
+    │   │   ├── image.js
+    │   │   ├── index.js
+    │   │   └── utils.js
+    │   ├── label
+    │   │   ├── index.js
+    │   │   ├── label.js
+    │   │   └── styles.js
+    │   ├── lightbox
+    │   │   ├── index.js
+    │   │   ├── lightbox.js
+    │   │   ├── styles.js
+    │   │   └── use-light-box.js
+    │   ├── loading-screen
+    │   │   ├── index.js
+    │   │   ├── loading-screen.js
+    │   │   └── splash-screen.js
+    │   ├── logo
+    │   │   ├── index.js
+    │   │   └── logo.js
+    │   ├── map
+    │   │   ├── index.js
+    │   │   ├── map-control.js
+    │   │   ├── map-marker.js
+    │   │   ├── map-popup.js
+    │   │   └── styles.js
+    │   ├── markdown
+    │   │   ├── index.js
+    │   │   ├── markdown.js
+    │   │   └── styles.js
+    │   ├── mega-menu
+    │   │   ├── common
+    │   │   │   ├── menu-more-link.js
+    │   │   │   ├── menu-products.js
+    │   │   │   ├── menu-tags.js
+    │   │   │   └── nav-sub-list.js
+    │   │   ├── horizontal
+    │   │   │   ├── mega-menu-desktop-horizontal.js
+    │   │   │   ├── nav-item.js
+    │   │   │   └── nav-list.js
+    │   │   ├── index.js
+    │   │   ├── mobile
+    │   │   │   ├── mega-menu-mobile.js
+    │   │   │   ├── nav-item.js
+    │   │   │   └── nav-list.js
+    │   │   └── vertical
+    │   │       ├── mega-menu-desktop-vertical.js
+    │   │       ├── nav-item.js
+    │   │       └── nav-list.js
+    │   ├── nav-basic
+    │   │   ├── desktop
+    │   │   │   ├── nav-basic-desktop.js
+    │   │   │   ├── nav-item.js
+    │   │   │   └── nav-list.js
+    │   │   ├── index.js
+    │   │   └── mobile
+    │   │       ├── nav-basic-mobile.js
+    │   │       ├── nav-item.js
+    │   │       └── nav-list.js
+    │   ├── nav-section
+    │   │   ├── horizontal
+    │   │   │   ├── index.js
+    │   │   │   ├── nav-item.js
+    │   │   │   ├── nav-list.js
+    │   │   │   └── nav-section-horizontal.js
+    │   │   ├── index.js
+    │   │   ├── mini
+    │   │   │   ├── index.js
+    │   │   │   ├── nav-item.js
+    │   │   │   ├── nav-list.js
+    │   │   │   └── nav-section-mini.js
+    │   │   └── vertical
+    │   │       ├── index.js
+    │   │       ├── nav-item.js
+    │   │       ├── nav-list.js
+    │   │       └── nav-section-vertical.js
+    │   ├── organizational-chart
+    │   │   ├── common
+    │   │   │   ├── group-node.js
+    │   │   │   ├── simple-node.js
+    │   │   │   └── standard-node.js
+    │   │   ├── index.js
+    │   │   └── organizational-chart.js
+    │   ├── progress-bar
+    │   │   ├── index.js
+    │   │   ├── progress-bar.js
+    │   │   └── styles.js
+    │   ├── scroll-progress
+    │   │   ├── index.js
+    │   │   └── scroll-progress.js
+    │   ├── scrollbar
+    │   │   ├── index.js
+    │   │   ├── scrollbar.js
+    │   │   └── styles.js
+    │   ├── search-not-found
+    │   │   ├── index.js
+    │   │   └── search-not-found.js
+    │   ├── settings
+    │   │   ├── context
+    │   │   │   ├── index.js
+    │   │   │   ├── settings-context.js
+    │   │   │   └── settings-provider.js
+    │   │   ├── drawer
+    │   │   │   ├── base-option.js
+    │   │   │   ├── fullscreen-option.js
+    │   │   │   ├── index.js
+    │   │   │   ├── layout-options.js
+    │   │   │   ├── presets-options.js
+    │   │   │   ├── settings-drawer.js
+    │   │   │   └── stretch-options.js
+    │   │   └── index.js
+    │   ├── snackbar
+    │   │   ├── index.js
+    │   │   ├── snackbar-provider.js
+    │   │   └── styles.js
+    │   ├── svg-color
+    │   │   ├── index.js
+    │   │   └── svg-color.js
+    │   ├── table
+    │   │   ├── index.js
+    │   │   ├── table-empty-rows.js
+    │   │   ├── table-head-custom.js
+    │   │   ├── table-no-data.js
+    │   │   ├── table-pagination-custom.js
+    │   │   ├── table-selected-action.js
+    │   │   ├── table-skeleton.js
+    │   │   ├── use-table.js
+    │   │   └── utils.js
+    │   ├── text-max-line
+    │   │   ├── index.js
+    │   │   ├── text-max-line.js
+    │   │   └── use-typography.js
+    │   ├── upload
+    │   │   ├── errors-rejection-files.js
+    │   │   ├── index.js
+    │   │   ├── preview-multi-file.js
+    │   │   ├── preview-single-file.js
+    │   │   ├── upload-avatar.js
+    │   │   ├── upload-box.js
+    │   │   └── upload.js
+    │   └── walktour
+    │       ├── index.js
+    │       ├── use-walktour.js
+    │       ├── walktour-progress-bar.js
+    │       └── walktour.js
+    ├── config-global.js
+    ├── global.css
+    ├── hooks
+    │   ├── use-boolean.js
+    │   ├── use-copy-to-clipboard.js
+    │   ├── use-countdown.js
+    │   ├── use-debounce.js
+    │   ├── use-double-click.js
+    │   ├── use-event-listener.js
+    │   ├── use-local-storage.js
+    │   ├── use-mocked-user.js
+    │   ├── use-off-set-top.js
+    │   └── use-responsive.js
+    ├── layouts
+    │   ├── auth
+    │   │   ├── classic.js
+    │   │   ├── modern-compact.js
+    │   │   └── modern.js
+    │   ├── common
+    │   │   ├── account-popover.js
+    │   │   ├── contacts-popover.js
+    │   │   ├── header-shadow.js
+    │   │   ├── header-simple.js
+    │   │   ├── language-popover.js
+    │   │   ├── login-button.js
+    │   │   ├── nav-toggle-button.js
+    │   │   ├── nav-upgrade.js
+    │   │   ├── notifications-popover
+    │   │   │   ├── index.js
+    │   │   │   └── notification-item.js
+    │   │   ├── register-button.js
+    │   │   ├── searchbar
+    │   │   │   ├── index.js
+    │   │   │   ├── result-item.js
+    │   │   │   └── utils.js
+    │   │   └── settings-button.js
+    │   ├── compact
+    │   │   └── index.js
+    │   ├── config-layout.js
+    │   ├── dashboard
+    │   │   ├── config-navigation.js
+    │   │   ├── header.js
+    │   │   ├── index.js
+    │   │   ├── main.js
+    │   │   ├── nav-horizontal.js
+    │   │   ├── nav-mini.js
+    │   │   └── nav-vertical.js
+    │   ├── main
+    │   │   ├── config-navigation.js
+    │   │   ├── footer.js
+    │   │   ├── header.js
+    │   │   ├── index.js
+    │   │   └── nav
+    │   │       ├── desktop
+    │   │       │   ├── index.js
+    │   │       │   ├── nav-item.js
+    │   │       │   └── nav-list.js
+    │   │       └── mobile
+    │   │           ├── index.js
+    │   │           ├── nav-item.js
+    │   │           └── nav-list.js
+    │   └── simple
+    │       └── index.js
+    ├── locales
+    │   ├── config-lang.js
+    │   ├── i18n.js
+    │   ├── index.js
+    │   ├── langs
+    │   │   ├── ar.json
+    │   │   ├── cn.json
+    │   │   ├── en.json
+    │   │   ├── fr.json
+    │   │   └── vi.json
+    │   ├── localization-provider.js
+    │   └── use-locales.js
+    ├── routes
+    │   ├── components
+    │   │   ├── index.js
+    │   │   └── router-link.js
+    │   ├── hooks
+    │   │   ├── index.js
+    │   │   ├── use-active-link.js
+    │   │   ├── use-params.js
+    │   │   ├── use-pathname.js
+    │   │   ├── use-router.js
+    │   │   └── use-search-params.js
+    │   └── paths.js
+    ├── sections
+    │   ├── about
+    │   │   ├── about-hero.js
+    │   │   ├── about-team.js
+    │   │   ├── about-testimonials.js
+    │   │   ├── about-vision.js
+    │   │   ├── about-what.js
+    │   │   └── view
+    │   │       ├── about-view.js
+    │   │       └── index.js
+    │   ├── account
+    │   │   ├── account-billing-address.js
+    │   │   ├── account-billing-history.js
+    │   │   ├── account-billing-payment.js
+    │   │   ├── account-billing-plan.js
+    │   │   ├── account-billing.js
+    │   │   ├── account-change-password.js
+    │   │   ├── account-general.js
+    │   │   ├── account-notifications.js
+    │   │   ├── account-social-links.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       └── user-account-view.js
+    │   ├── address
+    │   │   ├── address-item.js
+    │   │   ├── address-list-dialog.js
+    │   │   ├── address-new-form.js
+    │   │   └── index.js
+    │   ├── auth
+    │   │   └── jwt
+    │   │       ├── index.js
+    │   │       ├── jwt-login-view.js
+    │   │       └── jwt-register-view.js
+    │   ├── blank
+    │   │   └── view.js
+    │   ├── blog
+    │   │   ├── post-comment-form.js
+    │   │   ├── post-comment-item.js
+    │   │   ├── post-comment-list.js
+    │   │   ├── post-details-hero.js
+    │   │   ├── post-details-preview.js
+    │   │   ├── post-details-toolbar.js
+    │   │   ├── post-item-horizontal.js
+    │   │   ├── post-item.js
+    │   │   ├── post-list-horizontal.js
+    │   │   ├── post-list.js
+    │   │   ├── post-new-edit-form.js
+    │   │   ├── post-search.js
+    │   │   ├── post-skeleton.js
+    │   │   ├── post-sort.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       ├── post-create-view.js
+    │   │       ├── post-details-home-view.js
+    │   │       ├── post-details-view.js
+    │   │       ├── post-edit-view.js
+    │   │       ├── post-list-home-view.js
+    │   │       └── post-list-view.js
+    │   ├── calendar
+    │   │   ├── calendar-filters-result.js
+    │   │   ├── calendar-filters.js
+    │   │   ├── calendar-form.js
+    │   │   ├── calendar-toolbar.js
+    │   │   ├── hooks
+    │   │   │   ├── index.js
+    │   │   │   ├── use-calendar.js
+    │   │   │   └── use-event.js
+    │   │   ├── styles.js
+    │   │   └── view
+    │   │       ├── calendar-view.js
+    │   │       └── index.js
+    │   ├── chat
+    │   │   ├── chat-header-compose.js
+    │   │   ├── chat-header-detail.js
+    │   │   ├── chat-message-input.js
+    │   │   ├── chat-message-item.js
+    │   │   ├── chat-message-list.js
+    │   │   ├── chat-nav-account.js
+    │   │   ├── chat-nav-item.js
+    │   │   ├── chat-nav-search-results.js
+    │   │   ├── chat-nav.js
+    │   │   ├── chat-room-attachments.js
+    │   │   ├── chat-room-group.js
+    │   │   ├── chat-room-participant-dialog.js
+    │   │   ├── chat-room-single.js
+    │   │   ├── chat-room.js
+    │   │   ├── chat-skeleton.js
+    │   │   ├── hooks
+    │   │   │   ├── index.js
+    │   │   │   ├── use-collapse-nav.js
+    │   │   │   ├── use-get-message.js
+    │   │   │   ├── use-get-nav-item.js
+    │   │   │   └── use-messages-scroll.js
+    │   │   └── view
+    │   │       ├── chat-view.js
+    │   │       └── index.js
+    │   ├── checkout
+    │   │   ├── checkout-billing-address.js
+    │   │   ├── checkout-billing-info.js
+    │   │   ├── checkout-cart-product-list.js
+    │   │   ├── checkout-cart-product.js
+    │   │   ├── checkout-cart.js
+    │   │   ├── checkout-delivery.js
+    │   │   ├── checkout-order-complete.js
+    │   │   ├── checkout-payment-methods.js
+    │   │   ├── checkout-payment.js
+    │   │   ├── checkout-steps.js
+    │   │   ├── checkout-summary.js
+    │   │   ├── context
+    │   │   │   ├── checkout-context.js
+    │   │   │   ├── checkout-provider.js
+    │   │   │   └── index.js
+    │   │   └── view
+    │   │       ├── checkout-view.js
+    │   │       └── index.js
+    │   ├── coming-soon
+    │   │   └── view.js
+    │   ├── contact
+    │   │   ├── contact-form.js
+    │   │   ├── contact-hero.js
+    │   │   ├── contact-map.js
+    │   │   └── view
+    │   │       ├── contact-view.js
+    │   │       └── index.js
+    │   ├── error
+    │   │   ├── 403-view.js
+    │   │   ├── 500-view.js
+    │   │   ├── index.js
+    │   │   └── not-found-view.js
+    │   ├── faqs
+    │   │   ├── faqs-category.js
+    │   │   ├── faqs-form.js
+    │   │   ├── faqs-hero.js
+    │   │   ├── faqs-list.js
+    │   │   └── view
+    │   │       ├── faqs-view.js
+    │   │       └── index.js
+    │   ├── file-manager
+    │   │   ├── file-data-activity.js
+    │   │   ├── file-manager-action-selected.js
+    │   │   ├── file-manager-file-details.js
+    │   │   ├── file-manager-file-item.js
+    │   │   ├── file-manager-filters-result.js
+    │   │   ├── file-manager-filters.js
+    │   │   ├── file-manager-folder-item.js
+    │   │   ├── file-manager-grid-view.js
+    │   │   ├── file-manager-invited-item.js
+    │   │   ├── file-manager-new-folder-dialog.js
+    │   │   ├── file-manager-panel.js
+    │   │   ├── file-manager-share-dialog.js
+    │   │   ├── file-manager-table-row.js
+    │   │   ├── file-manager-table.js
+    │   │   ├── file-recent-item.js
+    │   │   ├── file-storage-overview.js
+    │   │   ├── file-upgrade.js
+    │   │   ├── file-widget.js
+    │   │   └── view
+    │   │       ├── file-manager-view.js
+    │   │       └── index.js
+    │   ├── home
+    │   │   ├── home-advertisement.js
+    │   │   ├── home-clean-interfaces.js
+    │   │   ├── home-color-presets.js
+    │   │   ├── home-dark-mode.js
+    │   │   ├── home-for-designer.js
+    │   │   ├── home-hero.js
+    │   │   ├── home-hugepack-elements.js
+    │   │   ├── home-looking-for.js
+    │   │   ├── home-minimal.js
+    │   │   ├── home-pricing.js
+    │   │   └── view
+    │   │       ├── home-view.js
+    │   │       └── index.js
+    │   ├── invoice
+    │   │   ├── invoice-analytic.js
+    │   │   ├── invoice-details.js
+    │   │   ├── invoice-new-edit-address.js
+    │   │   ├── invoice-new-edit-details.js
+    │   │   ├── invoice-new-edit-form.js
+    │   │   ├── invoice-new-edit-status-date.js
+    │   │   ├── invoice-pdf.js
+    │   │   ├── invoice-table-filters-result.js
+    │   │   ├── invoice-table-row.js
+    │   │   ├── invoice-table-toolbar.js
+    │   │   ├── invoice-toolbar.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       ├── invoice-create-view.js
+    │   │       ├── invoice-details-view.js
+    │   │       ├── invoice-edit-view.js
+    │   │       └── invoice-list-view.js
+    │   ├── job
+    │   │   ├── job-details-candidates.js
+    │   │   ├── job-details-content.js
+    │   │   ├── job-details-toolbar.js
+    │   │   ├── job-filters-result.js
+    │   │   ├── job-filters.js
+    │   │   ├── job-item.js
+    │   │   ├── job-list.js
+    │   │   ├── job-new-edit-form.js
+    │   │   ├── job-search.js
+    │   │   ├── job-sort.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       ├── job-create-view.js
+    │   │       ├── job-details-view.js
+    │   │       ├── job-edit-view.js
+    │   │       └── job-list-view.js
+    │   ├── kanban
+    │   │   ├── kanban-column-add.js
+    │   │   ├── kanban-column-tool-bar.js
+    │   │   ├── kanban-column.js
+    │   │   ├── kanban-contacts-dialog.js
+    │   │   ├── kanban-details-attachments.js
+    │   │   ├── kanban-details-comment-input.js
+    │   │   ├── kanban-details-comment-list.js
+    │   │   ├── kanban-details-priority.js
+    │   │   ├── kanban-details-toolbar.js
+    │   │   ├── kanban-details.js
+    │   │   ├── kanban-input-name.js
+    │   │   ├── kanban-skeleton.js
+    │   │   ├── kanban-task-add.js
+    │   │   ├── kanban-task-item.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       └── kanban-view.js
+    │   ├── mail
+    │   │   ├── mail-compose.js
+    │   │   ├── mail-details.js
+    │   │   ├── mail-header.js
+    │   │   ├── mail-item.js
+    │   │   ├── mail-list.js
+    │   │   ├── mail-nav-item.js
+    │   │   ├── mail-nav.js
+    │   │   ├── mail-skeleton.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       └── mail-view.js
+    │   ├── maintenance
+    │   │   └── view.js
+    │   ├── order
+    │   │   ├── order-details-history.js
+    │   │   ├── order-details-info.js
+    │   │   ├── order-details-item.js
+    │   │   ├── order-details-toolbar.js
+    │   │   ├── order-table-filters-result.js
+    │   │   ├── order-table-row.js
+    │   │   ├── order-table-toolbar.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       ├── order-details-view.js
+    │   │       └── order-list-view.js
+    │   ├── overview
+    │   │   ├── analytics
+    │   │   │   ├── analytics-conversion-rates.js
+    │   │   │   ├── analytics-current-subject.js
+    │   │   │   ├── analytics-current-visits.js
+    │   │   │   ├── analytics-news.js
+    │   │   │   ├── analytics-order-timeline.js
+    │   │   │   ├── analytics-tasks.js
+    │   │   │   ├── analytics-traffic-by-site.js
+    │   │   │   ├── analytics-website-visits.js
+    │   │   │   ├── analytics-widget-summary.js
+    │   │   │   └── view
+    │   │   │       ├── index.js
+    │   │   │       └── overview-analytics-view.js
+    │   │   ├── app
+    │   │   │   ├── app-area-installed.js
+    │   │   │   ├── app-current-download.js
+    │   │   │   ├── app-featured.js
+    │   │   │   ├── app-new-invoice.js
+    │   │   │   ├── app-top-authors.js
+    │   │   │   ├── app-top-installed-countries.js
+    │   │   │   ├── app-top-related.js
+    │   │   │   ├── app-welcome.js
+    │   │   │   ├── app-widget-summary.js
+    │   │   │   ├── app-widget.js
+    │   │   │   └── view
+    │   │   │       ├── index.js
+    │   │   │       └── overview-app-view.js
+    │   │   ├── banking
+    │   │   │   ├── banking-balance-statistics.js
+    │   │   │   ├── banking-contacts.js
+    │   │   │   ├── banking-current-balance.js
+    │   │   │   ├── banking-expenses-categories.js
+    │   │   │   ├── banking-invite-friends.js
+    │   │   │   ├── banking-quick-transfer.js
+    │   │   │   ├── banking-recent-transitions.js
+    │   │   │   ├── banking-widget-summary.js
+    │   │   │   └── view
+    │   │   │       ├── index.js
+    │   │   │       └── overview-banking-view.js
+    │   │   ├── booking
+    │   │   │   ├── booking-available.js
+    │   │   │   ├── booking-booked.js
+    │   │   │   ├── booking-check-in-widgets.js
+    │   │   │   ├── booking-customer-reviews.js
+    │   │   │   ├── booking-details.js
+    │   │   │   ├── booking-newest.js
+    │   │   │   ├── booking-statistics.js
+    │   │   │   ├── booking-total-incomes.js
+    │   │   │   ├── booking-widget-summary.js
+    │   │   │   └── view
+    │   │   │       ├── index.js
+    │   │   │       └── overview-booking-view.js
+    │   │   └── file
+    │   │       └── view
+    │   │           ├── index.js
+    │   │           └── overview-file-view.js
+    │   ├── payment
+    │   │   ├── payment-billing-address.js
+    │   │   ├── payment-card-item.js
+    │   │   ├── payment-card-list-dialog.js
+    │   │   ├── payment-methods.js
+    │   │   ├── payment-new-card-dialog.js
+    │   │   ├── payment-summary.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       └── payment-view.js
+    │   ├── permission
+    │   │   └── view.js
+    │   ├── pricing
+    │   │   ├── pricing-card.js
+    │   │   └── view.js
+    │   ├── product
+    │   │   ├── common
+    │   │   │   ├── cart-icon.js
+    │   │   │   └── incrementer-button.js
+    │   │   ├── product-details-carousel.js
+    │   │   ├── product-details-description.js
+    │   │   ├── product-details-review.js
+    │   │   ├── product-details-summary.js
+    │   │   ├── product-details-toolbar.js
+    │   │   ├── product-filters-result.js
+    │   │   ├── product-filters.js
+    │   │   ├── product-item.js
+    │   │   ├── product-list.js
+    │   │   ├── product-new-edit-form.js
+    │   │   ├── product-review-item.js
+    │   │   ├── product-review-list.js
+    │   │   ├── product-review-new-form.js
+    │   │   ├── product-search.js
+    │   │   ├── product-skeleton.js
+    │   │   ├── product-sort.js
+    │   │   ├── product-table-filters-result.js
+    │   │   ├── product-table-row.js
+    │   │   ├── product-table-toolbar.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       ├── product-create-view.js
+    │   │       ├── product-details-view.js
+    │   │       ├── product-edit-view.js
+    │   │       ├── product-list-view.js
+    │   │       ├── product-shop-details-view.js
+    │   │       └── product-shop-view.js
+    │   ├── tour
+    │   │   ├── tour-details-bookers.js
+    │   │   ├── tour-details-content.js
+    │   │   ├── tour-details-toolbar.js
+    │   │   ├── tour-filters-result.js
+    │   │   ├── tour-filters.js
+    │   │   ├── tour-item.js
+    │   │   ├── tour-list.js
+    │   │   ├── tour-new-edit-form.js
+    │   │   ├── tour-search.js
+    │   │   ├── tour-sort.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       ├── tour-create-view.js
+    │   │       ├── tour-details-view.js
+    │   │       ├── tour-edit-view.js
+    │   │       └── tour-list-view.js
+    │   ├── user
+    │   │   ├── profile-cover.js
+    │   │   ├── profile-followers.js
+    │   │   ├── profile-friends.js
+    │   │   ├── profile-gallery.js
+    │   │   ├── profile-home.js
+    │   │   ├── profile-post-item.js
+    │   │   ├── user-card-list.js
+    │   │   ├── user-card.js
+    │   │   ├── user-new-edit-form.js
+    │   │   ├── user-quick-edit-form.js
+    │   │   ├── user-table-filters-result.js
+    │   │   ├── user-table-row.js
+    │   │   ├── user-table-toolbar.js
+    │   │   └── view
+    │   │       ├── index.js
+    │   │       ├── user-cards-view.js
+    │   │       ├── user-create-view.js
+    │   │       ├── user-edit-view.js
+    │   │       ├── user-list-view.js
+    │   │       └── user-profile-view.js
+    │   └── _examples
+    │       ├── component-block.js
+    │       ├── component-card.js
+    │       ├── component-hero.js
+    │       ├── config-navigation.js
+    │       ├── extra
+    │       │   ├── animate-view
+    │       │   │   ├── background
+    │       │   │   │   ├── container.js
+    │       │   │   │   ├── index.js
+    │       │   │   │   └── toolbar.js
+    │       │   │   ├── control-panel.js
+    │       │   │   ├── dialog
+    │       │   │   │   ├── container.js
+    │       │   │   │   └── index.js
+    │       │   │   ├── get-variant.js
+    │       │   │   ├── index.js
+    │       │   │   ├── inview
+    │       │   │   │   ├── container.js
+    │       │   │   │   ├── index.js
+    │       │   │   │   └── toolbar.js
+    │       │   │   ├── other
+    │       │   │   │   ├── buttons.js
+    │       │   │   │   ├── index.js
+    │       │   │   │   └── logo.js
+    │       │   │   └── scroll
+    │       │   │       ├── container.js
+    │       │   │       ├── index.js
+    │       │   │       └── toolbar.js
+    │       │   ├── carousel-view
+    │       │   │   ├── carousel-animation.js
+    │       │   │   ├── carousel-basic-1.js
+    │       │   │   ├── carousel-basic-2.js
+    │       │   │   ├── carousel-basic-3.js
+    │       │   │   ├── carousel-basic-4.js
+    │       │   │   ├── carousel-center-mode.js
+    │       │   │   ├── carousel-thumbnail.js
+    │       │   │   └── index.js
+    │       │   ├── chart-view
+    │       │   │   ├── chart-area.js
+    │       │   │   ├── chart-bar.js
+    │       │   │   ├── chart-column-multiple.js
+    │       │   │   ├── chart-column-negative.js
+    │       │   │   ├── chart-column-single.js
+    │       │   │   ├── chart-column-stacked.js
+    │       │   │   ├── chart-donut.js
+    │       │   │   ├── chart-line.js
+    │       │   │   ├── chart-mixed.js
+    │       │   │   ├── chart-pie.js
+    │       │   │   ├── chart-radar-bar.js
+    │       │   │   ├── chart-radial-bar.js
+    │       │   │   └── index.js
+    │       │   ├── copy-to-clipboard-view.js
+    │       │   ├── editor-view.js
+    │       │   ├── form-validation-view
+    │       │   │   ├── index.js
+    │       │   │   ├── react-hook-form.js
+    │       │   │   ├── schema.js
+    │       │   │   └── values-preview.js
+    │       │   ├── image-view.js
+    │       │   ├── label-view.js
+    │       │   ├── lightbox-view.js
+    │       │   ├── map-view
+    │       │   │   ├── change-theme
+    │       │   │   │   ├── control-panel.js
+    │       │   │   │   └── index.js
+    │       │   │   ├── clusters
+    │       │   │   │   ├── index.js
+    │       │   │   │   └── layers.js
+    │       │   │   ├── draggable-markers
+    │       │   │   │   ├── control-panel.js
+    │       │   │   │   └── index.js
+    │       │   │   ├── heatmap
+    │       │   │   │   ├── control-panel.js
+    │       │   │   │   ├── index.js
+    │       │   │   │   └── map-style.js
+    │       │   │   ├── index.js
+    │       │   │   ├── interaction
+    │       │   │   │   ├── control-panel.js
+    │       │   │   │   └── index.js
+    │       │   │   ├── map-geo-json-animation.js
+    │       │   │   ├── map-highlight-by-filter.js
+    │       │   │   ├── map-markers-popups.js
+    │       │   │   ├── side-by-side
+    │       │   │   │   ├── control-panel.js
+    │       │   │   │   └── index.js
+    │       │   │   └── viewport-animation
+    │       │   │       ├── control-panel.js
+    │       │   │       └── index.js
+    │       │   ├── markdown-view.js
+    │       │   ├── mega-menu-view.js
+    │       │   ├── multi-language-view.js
+    │       │   ├── navigation-bar-view.js
+    │       │   ├── organizational-chart-view.js
+    │       │   ├── scroll-progress-view.js
+    │       │   ├── scroll-view.js
+    │       │   ├── snackbar-view.js
+    │       │   ├── text-max-line-view.js
+    │       │   ├── upload-view.js
+    │       │   └── walktour-view.js
+    │       ├── foundation
+    │       │   ├── colors-view.js
+    │       │   ├── grid-view.js
+    │       │   ├── icons-view.js
+    │       │   ├── index.js
+    │       │   ├── shadows-view.js
+    │       │   └── typography-view.js
+    │       ├── mui
+    │       │   ├── accordion-view.js
+    │       │   ├── alert-view.js
+    │       │   ├── autocomplete-view.js
+    │       │   ├── avatar-view.js
+    │       │   ├── badge-view.js
+    │       │   ├── breadcrumbs-view.js
+    │       │   ├── button-view
+    │       │   │   ├── button-groups.js
+    │       │   │   ├── button-variants.js
+    │       │   │   ├── floating-action-button.js
+    │       │   │   ├── icon-buttons.js
+    │       │   │   ├── index.js
+    │       │   │   └── toggle-buttons.js
+    │       │   ├── checkbox-view.js
+    │       │   ├── chip-view
+    │       │   │   ├── chip.js
+    │       │   │   └── index.js
+    │       │   ├── data-grid-view
+    │       │   │   ├── data-grid-basic.js
+    │       │   │   ├── data-grid-custom.js
+    │       │   │   └── index.js
+    │       │   ├── dialog-view
+    │       │   │   ├── alert-dialog.js
+    │       │   │   ├── form-dialog.js
+    │       │   │   ├── full-screen-dialog.js
+    │       │   │   ├── index.js
+    │       │   │   ├── max-width-dialog.js
+    │       │   │   ├── scroll-dialog.js
+    │       │   │   ├── simple-dialog.js
+    │       │   │   └── transitions-dialog.js
+    │       │   ├── list-view.js
+    │       │   ├── menu-view.js
+    │       │   ├── pagination-view.js
+    │       │   ├── picker-view
+    │       │   │   ├── index.js
+    │       │   │   ├── picker-date-range.js
+    │       │   │   ├── picker-date-time.js
+    │       │   │   ├── picker-date.js
+    │       │   │   └── picker-time.js
+    │       │   ├── popover-view.js
+    │       │   ├── progress-view
+    │       │   │   ├── index.js
+    │       │   │   ├── progress-circular.js
+    │       │   │   └── progress-linear.js
+    │       │   ├── radio-button-view.js
+    │       │   ├── rating-view.js
+    │       │   ├── slider-view.js
+    │       │   ├── stepper-view
+    │       │   │   ├── customized-steppers.js
+    │       │   │   ├── horizontal-linear-stepper.js
+    │       │   │   ├── index.js
+    │       │   │   ├── linear-alternative-label-stepper.js
+    │       │   │   └── vertical-linear-stepper.js
+    │       │   ├── switch-view.js
+    │       │   ├── table-view
+    │       │   │   ├── basic-table.js
+    │       │   │   ├── collapsible-table.js
+    │       │   │   ├── grouping-fixed-header-table.js
+    │       │   │   ├── index.js
+    │       │   │   ├── sorting-selecting-table.js
+    │       │   │   └── utils.js
+    │       │   ├── tabs-view.js
+    │       │   ├── textfield-view
+    │       │   │   ├── index.js
+    │       │   │   └── textfield.js
+    │       │   ├── timeline-view.js
+    │       │   ├── tooltip-view.js
+    │       │   └── transfer-list-view
+    │       │       ├── enhanced-transfer-list.js
+    │       │       ├── index.js
+    │       │       └── simple-transfer-list.js
+    │       └── view.js
+    ├── theme
+    │   ├── css.js
+    │   ├── custom-shadows.js
+    │   ├── index.js
+    │   ├── next-emotion-cache.js
+    │   ├── options
+    │   │   ├── contrast.js
+    │   │   ├── presets.js
+    │   │   └── right-to-left.js
+    │   ├── overrides
+    │   │   ├── components
+    │   │   │   ├── accordion.js
+    │   │   │   ├── alert.js
+    │   │   │   ├── appbar.js
+    │   │   │   ├── autocomplete.js
+    │   │   │   ├── avatar.js
+    │   │   │   ├── backdrop.js
+    │   │   │   ├── badge.js
+    │   │   │   ├── breadcrumbs.js
+    │   │   │   ├── button-group.js
+    │   │   │   ├── button.js
+    │   │   │   ├── card.js
+    │   │   │   ├── checkbox.js
+    │   │   │   ├── chip.js
+    │   │   │   ├── css-baseline.js
+    │   │   │   ├── data-grid.js
+    │   │   │   ├── date-picker.js
+    │   │   │   ├── dialog.js
+    │   │   │   ├── drawer.js
+    │   │   │   ├── fab.js
+    │   │   │   ├── list.js
+    │   │   │   ├── loading-button.js
+    │   │   │   ├── menu.js
+    │   │   │   ├── pagination.js
+    │   │   │   ├── paper.js
+    │   │   │   ├── popover.js
+    │   │   │   ├── progress.js
+    │   │   │   ├── radio.js
+    │   │   │   ├── rating.js
+    │   │   │   ├── select.js
+    │   │   │   ├── skeleton.js
+    │   │   │   ├── slider.js
+    │   │   │   ├── stepper.js
+    │   │   │   ├── svg-icon.js
+    │   │   │   ├── switch.js
+    │   │   │   ├── table.js
+    │   │   │   ├── tabs.js
+    │   │   │   ├── textfield.js
+    │   │   │   ├── timeline.js
+    │   │   │   ├── toggle-button.js
+    │   │   │   ├── tooltip.js
+    │   │   │   ├── tree-view.js
+    │   │   │   └── typography.js
+    │   │   ├── default-props.js
+    │   │   └── index.js
+    │   ├── palette.js
+    │   ├── shadows.js
+    │   └── typography.js
+    ├── utils
+    │   ├── axios.js
+    │   ├── change-case.js
+    │   ├── flatten-array.js
+    │   ├── format-number.js
+    │   ├── format-time.js
+    │   ├── highlight.js
+    │   ├── storage-available.js
+    │   └── uuidv4.js
+    └── _mock
+        ├── assets.js
+        ├── index.js
+        ├── map
+        │   ├── cities.js
+        │   ├── countries.js
+        │   └── map-style-basic-v8.json
+        ├── _blog.js
+        ├── _calendar.js
+        ├── _files.js
+        ├── _invoice.js
+        ├── _job.js
+        ├── _mock.js
+        ├── _order.js
+        ├── _others.js
+        ├── _overview.js
+        ├── _product.js
+        ├── _tour.js
+        └── _user.js

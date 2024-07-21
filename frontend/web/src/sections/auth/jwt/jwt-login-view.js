@@ -57,13 +57,13 @@ export default function JwtLoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await login?.(data.email, data.password);
-
+      await login(data.email, data.password);
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
+      console.error('Error response:', error.response);
       reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
+      setErrorMsg(error.response?.data?.error || error.message || 'Une erreur s\'est produite lors de la connexion');
     }
   });
 

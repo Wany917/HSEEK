@@ -1,81 +1,109 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import app from '@adonisjs/core/services/app'
 import { uploadFileValidator } from '#validators/file'
 import cuid from 'cuid'
 
 export default class FilesController {
+  private getUserDir(userId: string) {
+    return path.join(app.makePath('/home/debian/data'), userId)
+  }
+
+  private async ensureUserDirectories(userId: string) {
+    const userDir = this.getUserDir(userId)
+    const contDir = path.join(userDir, 'cont')
+    const tempFileDir = path.join(userDir, 'temp_file')
+    const tempLogDir = path.join(userDir, 'temp_log')
+
+    await fs.mkdir(userDir, { recursive: true })
+    await fs.mkdir(contDir, { recursive: true })
+    await fs.mkdir(tempFileDir, { recursive: true })
+    await fs.mkdir(tempLogDir, { recursive: true })
+  }
+
   async upload({ auth, request, response }: HttpContext) {
     const user = auth.user!
-    const { file, path: requestPath } = await request.validateUsing(uploadFileValidator)
-    const userDir = path.join(
-      app.makePath('../frontend/web/public/data'),
-      user.id.toString(),
-      requestPath || ''
-    )
+    const { file } = await request.validateUsing(uploadFileValidator)
+    const userId = user.id.toString()
 
-    console.log(`Attempting to upload file to directory: ${userDir}`)
+    await this.ensureUserDirectories(userId)
 
-    if (!fs.existsSync(userDir)) {
-      console.log(`Directory does not exist: ${userDir}, creating it...`)
-      fs.mkdirSync(userDir, { recursive: true })
-    }
+    const userDir = this.getUserDir(userId)
+    const tempFileDir = path.join(userDir, 'temp_file')
+    const contDir = path.join(userDir, 'cont')
 
     const fileName = `${cuid()}.${file.extname}`
-    await file.move(userDir, { name: fileName })
+    await file.move(tempFileDir, { name: fileName })
 
-    const filePath = path.join(userDir, fileName)
-    console.log(`File uploaded to: ${filePath}`)
+    const tempFilePath = path.join(tempFileDir, fileName)
+    const contFilePath = path.join(contDir, fileName)
 
-    return response.created({ message: 'File uploaded successfully', path: filePath })
+    await fs.copyFile(tempFilePath, contFilePath)
+
+    console.log(`File uploaded to: ${tempFilePath} and copied to: ${contFilePath}`)
+
+    return response.created({ message: 'File uploaded successfully', path: tempFilePath })
   }
 
-  async list({ auth, request, response }: HttpContext) {
+  async list({ auth, response }: HttpContext) {
     const user = auth.user!
-    const requestPath = request.input('path', '')
+    const userDir = this.getUserDir(user.id.toString())
+    const tempFileDir = path.join(userDir, 'temp_file')
 
-    const userDir = path.join(app.makePath('data'), user.id.toString(), requestPath)
-
-    console.log(`Listing files in directory: ${userDir}`)
-
-    if (!fs.existsSync(userDir)) {
-      console.error(`Directory does not exist: ${userDir}`)
-      return response.notFound('Folder not found')
+    try {
+      const files = await fs.readdir(tempFileDir)
+      return response.ok(files)
+    } catch (error) {
+      console.error(`Error listing files: ${error}`)
+      return response.ok([])
     }
-
-    const files = await fs.promises.readdir(userDir)
-    return response.ok(files)
   }
 
-  async read({ auth, params, request, response }: HttpContext) {
+  async read({ auth, params, response }: HttpContext) {
     const user = auth.user!
-    const requestPath = request.input('path', '')
-    const filePath = path.join(app.makePath('data'), user.id.toString(), requestPath, params.fileId)
+    const userDir = this.getUserDir(user.id.toString())
+    const tempFileDir = path.join(userDir, 'temp_file')
+    const filePath = path.join(tempFileDir, params.fileId)
 
-    console.log(`Reading file: ${filePath}`)
-
-    if (!fs.existsSync(filePath)) {
-      console.error(`File does not exist: ${filePath}`)
+    try {
+      await fs.access(filePath)
+      return response.download(filePath)
+    } catch {
       return response.notFound('File not found')
     }
-
-    return response.download(filePath)
   }
 
-  async delete({ auth, params, request, response }: HttpContext) {
+  async analyze({ auth, params, response }: HttpContext) {
     const user = auth.user!
-    const requestPath = request.input('path', '')
-    const filePath = path.join(app.makePath('data'), user.id.toString(), requestPath, params.fileId)
+    const userDir = this.getUserDir(user.id.toString())
+    const tempLogDir = path.join(userDir, 'temp_log')
+    const logFile = path.join(tempLogDir, 'clamscan.log')
 
-    console.log(`Deleting file: ${filePath}`)
+    try {
+      const analysisResult = await fs.readFile(logFile, 'utf-8')
+      return response.ok({ result: analysisResult })
+    } catch (error) {
+      console.error('Error reading analysis result:', error)
+      return response.internalServerError('Analysis result not available')
+    }
+  }
 
-    if (!fs.existsSync(filePath)) {
-      console.error(`File does not exist: ${filePath}`)
+  async delete({ auth, params, response }: HttpContext) {
+    const user = auth.user!
+    const userDir = this.getUserDir(user.id.toString())
+    const tempFileDir = path.join(userDir, 'temp_file')
+    const contDir = path.join(userDir, 'cont')
+    const tempFilePath = path.join(tempFileDir, params.fileId)
+    const contFilePath = path.join(contDir, params.fileId)
+
+    try {
+      await fs.unlink(tempFilePath)
+      await fs.unlink(contFilePath)
+      return response.ok({ message: 'File deleted successfully' })
+    } catch (error) {
+      console.error(`Error deleting file: ${error}`)
       return response.notFound('File not found')
     }
-
-    await fs.promises.unlink(filePath)
-    return response.ok({ message: 'File deleted successfully' })
   }
 }
