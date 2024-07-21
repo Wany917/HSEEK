@@ -135,6 +135,9 @@ export default class FilesController {
         return response.ok({ message: 'Analysis is still in progress.' })
       }
 
+      // Attendre un court instant pour s'assurer que le fichier de log est écrit
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
       const files = await fs.readdir(tempLogDir)
       if (files.length === 0) {
         return response.ok({ message: 'No analysis results found.' })
@@ -146,6 +149,8 @@ export default class FilesController {
       const analysisResult = await fs.readFile(logFile, 'utf-8')
 
       const parsedResult = this.parseAnalysisResult(analysisResult)
+
+      // Stocker les résultats en utilisant le modèle
       const scanResult = await ScanResult.create({
         userId,
         filename: mostRecentFile,
@@ -153,19 +158,12 @@ export default class FilesController {
         fullLog: analysisResult,
       })
 
+      // Nettoyer les répertoires
       await fs.rm(userDir, { recursive: true, force: true })
 
       return response.ok({
         message: 'Analysis completed and results stored.',
-        result: {
-          id: scanResult.id,
-          knownViruses: scanResult.knownViruses,
-          scannedFiles: scanResult.scannedFiles,
-          infectedFiles: scanResult.infectedFiles,
-          scanTime: scanResult.scanTime,
-          startDate: scanResult.startDate,
-          endDate: scanResult.endDate,
-        },
+        result: scanResult,
       })
     } catch (error) {
       console.error(`Error checking analysis result for user ${userId}:`, error)

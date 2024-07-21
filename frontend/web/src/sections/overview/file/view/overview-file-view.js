@@ -95,9 +95,15 @@ export default function OverviewFileView() {
 
   const handleAnalyze = useCallback(async (fileName) => {
     setIsLoading(true);
+    setError(null);
     try {
       const result = await checkAnalysisResult(fileName);
-      setAnalysisResults(prev => ({ ...prev, [fileName]: result }));
+      console.log('Analysis result:', result);  // Pour le débogage
+      if (result && result.result) {
+        setAnalysisResults(prev => ({ ...prev, [fileName]: result.result }));
+      } else {
+        setError('Analysis result not available yet.');
+      }
     } catch (err) {
       console.error('Error analyzing file:', err);
       setError('Failed to analyze file or analysis timed out. Please try again.');
@@ -105,7 +111,6 @@ export default function OverviewFileView() {
       setIsLoading(false);
     }
   }, []);
-
   const renderStorageOverview = (
     <FileStorageOverview
       total={GB}
