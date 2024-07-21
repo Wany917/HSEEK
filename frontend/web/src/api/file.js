@@ -13,7 +13,19 @@ export async function getFiles() {
   console.log('Fetching files');
   const response = await axios.get('/files');
   console.log('Get files response:', response.data);
-  return response.data;
+  
+  // Transformer les données pour inclure les résultats d'analyse
+  const filesWithAnalysis = response.data.map(file => ({
+    ...file,
+    analysisResult: {
+      knownViruses: file.knownViruses,
+      scannedFiles: file.scannedFiles,
+      infectedFiles: file.infectedFiles,
+      scanTime: file.scanTime
+    }
+  }));
+  
+  return filesWithAnalysis;
 }
 
 export async function checkAnalysisResult(filename) {

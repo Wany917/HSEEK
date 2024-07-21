@@ -40,6 +40,13 @@ export default function OverviewFileView() {
     try {
       const fetchedFiles = await getFiles();
       setFiles(fetchedFiles);
+      const newAnalysisResults = {};
+      fetchedFiles.forEach((file) => {
+        if (file.analysisResult) {
+          newAnalysisResults[file.filename] = file.analysisResult;
+        }
+      });
+      setAnalysisResults(newAnalysisResults);
       setError(null);
     } catch (err) {
       console.error('Error fetching files:', err);
@@ -167,19 +174,19 @@ export default function OverviewFileView() {
                       <Typography variant="subtitle2" noWrap>
                         {file.filename}
                       </Typography>
-                      {analysisResults[file.filename] ? (
+                      {file.analysisResult ? (
                         <Box>
                           <Typography variant="body2">
-                            Known viruses: {analysisResults[file.filename].knownViruses}
+                            Known viruses: {file.analysisResult.knownViruses}
                           </Typography>
                           <Typography variant="body2">
-                            Scanned files: {analysisResults[file.filename].scannedFiles}
+                            Scanned files: {file.analysisResult.scannedFiles}
                           </Typography>
                           <Typography variant="body2">
-                            Infected files: {analysisResults[file.filename].infectedFiles}
+                            Infected files: {file.analysisResult.infectedFiles}
                           </Typography>
                           <Typography variant="body2">
-                            Scan time: {analysisResults[file.filename].scanTime} seconds
+                            Scan time: {file.analysisResult.scanTime} seconds
                           </Typography>
                         </Box>
                       ) : (
@@ -192,7 +199,10 @@ export default function OverviewFileView() {
                       <IconButton aria-label="analyze" onClick={() => handleAnalyze(file.filename)}>
                         <Iconify icon="mdi:magnify" />
                       </IconButton>
-                      <IconButton aria-label="download" onClick={() => handleDownload(file.filename)}>
+                      <IconButton
+                        aria-label="download"
+                        onClick={() => handleDownload(file.filename)}
+                      >
                         <Iconify icon="mdi:download" />
                       </IconButton>
                       <IconButton aria-label="delete" onClick={() => handleDelete(file.filename)}>
