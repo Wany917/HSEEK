@@ -78,7 +78,7 @@ export default class FilesController {
     const user = auth.user!
     const userDir = this.getUserDir(user.id.toString())
     const tempLogDir = path.join(userDir, 'temp_log')
-    const logFile = path.join(tempLogDir, params.fileId.replace(/\.[^.]+$/, '.log'))
+    const logFile = path.join(tempLogDir, params.fileId.replace(/\.[^.]+$/, '.txt'))
 
     try {
       const analysisResult = await fs.readFile(logFile, 'utf-8')

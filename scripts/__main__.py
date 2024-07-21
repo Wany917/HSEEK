@@ -2,7 +2,6 @@ import os
 import pulumi
 from pulumi_docker import Image, Container, DockerBuildArgs
 
-# Lire l'ID utilisateur depuis la configuration Pulumi
 config = pulumi.Config()
 user_id = config.require("user_id")
 
