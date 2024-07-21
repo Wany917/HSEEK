@@ -187,7 +187,7 @@ export default class FilesController {
     const user = auth.user!
     const userId = user.id.toString()
     const userDir = this.getUserDir(userId)
-    log('userDir', userDir)
+    console.log('userDir', userDir)
     const tempLogDir = path.join(userDir, 'temp_log')
 
     try {
