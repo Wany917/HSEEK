@@ -31,11 +31,7 @@ export default function OverviewFileView() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResults, setAnalysisResults] = useState({});
-
-  useEffect(() => {
-    fetchFiles();
-  }, [fetchFiles]);
-
+  
   const fetchFiles = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -57,6 +53,11 @@ export default function OverviewFileView() {
     }
   }, []);
 
+  useEffect(() => {
+    fetchFiles();
+  }, [fetchFiles]);
+
+
   const handleDrop = useCallback(async (acceptedFiles) => {
     setIsLoading(true);
     try {
@@ -70,7 +71,7 @@ export default function OverviewFileView() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [fetchFiles]);
 
   const handleDownload = useCallback((fileName) => {
     const fileUrl = `${process.env.NEXT_PUBLIC_API_URL}/files/${fileName}`;
@@ -94,7 +95,7 @@ export default function OverviewFileView() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [fetchFiles]);
 
   const handleCheckAllAnalysis = useCallback(async () => {
     setIsLoading(true);
@@ -202,9 +203,6 @@ export default function OverviewFileView() {
                       )}
                     </CardContent>
                     <CardActions disableSpacing>
-                      <IconButton aria-label="analyze" onClick={() => handleAnalyze(file.filename)}>
-                        <Iconify icon="mdi:magnify" />
-                      </IconButton>
                       <IconButton
                         aria-label="download"
                         onClick={() => handleDownload(file.filename)}
