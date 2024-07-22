@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
+import { Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import Container from '@mui/material/Container';
@@ -165,10 +166,12 @@ export default function OverviewFileView() {
             )}
 
             <Typography variant="h6">Uploaded Files:</Typography>
+            {/* Do a button to call a checkAnalsis */}
 
             <Grid container spacing={2}>
               {files.map((file) => (
                 <Grid item xs={12} sm={6} md={4} key={file.id}>
+                  <Button onClick={() => checkAnalysisResult()}> Check Analysis </Button>
                   <Card>
                     <CardContent>
                       <Typography variant="subtitle2" noWrap>
