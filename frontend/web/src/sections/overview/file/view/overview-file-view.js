@@ -30,7 +30,6 @@ export default function OverviewFileView() {
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [analysisResults, setAnalysisResults] = useState({});
   
   const fetchFiles = useCallback(async () => {
     setIsLoading(true);
