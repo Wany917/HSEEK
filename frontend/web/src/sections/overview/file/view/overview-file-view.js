@@ -34,9 +34,9 @@ export default function OverviewFileView() {
 
   useEffect(() => {
     fetchFiles();
-  }, []);
+  }, [fetchFiles]);
 
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     setIsLoading(true);
     try {
       const fetchedFiles = await getFiles();
@@ -55,7 +55,7 @@ export default function OverviewFileView() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const handleDrop = useCallback(async (acceptedFiles) => {
     setIsLoading(true);
@@ -96,24 +96,21 @@ export default function OverviewFileView() {
     }
   }, []);
 
-  const handleAnalyze = useCallback(async (fileName) => {
+  const handleCheckAllAnalysis = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const result = await checkAnalysisResult(fileName);
-      console.log('Analysis result:', result); // Pour le débogage
-      if (result) {
-        setAnalysisResults((prev) => ({ ...prev, [fileName]: result }));
-      } else {
-        setError('Analysis result not available yet.');
-      }
+      const result = await checkAnalysisResult();
+      console.log('Analysis results:', result);
+      // Rafraîchir la liste des fichiers pour obtenir les nouveaux résultats
+      await fetchFiles();
     } catch (err) {
-      console.error('Error analyzing file:', err);
-      setError('Failed to analyze file or analysis timed out. Please try again.');
+      console.error('Error checking analysis results:', err);
+      setError('Failed to check analysis results. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [fetchFiles]);
 
   const renderStorageOverview = (
     <FileStorageOverview
@@ -166,12 +163,18 @@ export default function OverviewFileView() {
             )}
 
             <Typography variant="h6">Uploaded Files:</Typography>
-            {/* Do a button to call a checkAnalsis */}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCheckAllAnalysis}
+              disabled={isLoading}
+            >
+              Check All Analysis Results
+            </Button>
 
             <Grid container spacing={2}>
               {files.map((file) => (
                 <Grid item xs={12} sm={6} md={4} key={file.id}>
-                  <Button onClick={() => checkAnalysisResult()}> Check Analysis </Button>
                   <Card>
                     <CardContent>
                       <Typography variant="subtitle2" noWrap>
