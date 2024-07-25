@@ -61,7 +61,7 @@ export async function getUrlScreenshot(uuid) {
   return response.url;
 }
 
-export async function getUrlDom(uuid) {
+export async function getUrlDomContent(uuid) {
   const response = await fetch(`https://urlscan.io/dom/${uuid}/`);
   return response.text();
 }

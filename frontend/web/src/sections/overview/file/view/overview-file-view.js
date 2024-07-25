@@ -17,7 +17,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { scanUrl, sendFile, getFiles, deleteInScanResult, checkAnalysisResult } from 'src/api/file';
+import { scanUrl, sendFile, getFiles, getUrlScreenshot, getUrlDomContent, deleteInScanResult ,checkAnalysisResult} from 'src/api/file';
 
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
