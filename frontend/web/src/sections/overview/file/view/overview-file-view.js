@@ -95,9 +95,10 @@ export default function OverviewFileView() {
       }
       aStatRef.current.textContent = "Analysis Finished !"
       fetchFiles();
-
+      if(areFilesFetched){
+        setIsLoading(false);
+      }
     }
-    setIsLoading(false);
   }, [fetchFiles]);
 
   const handleDownload = useCallback((fileName) => {
