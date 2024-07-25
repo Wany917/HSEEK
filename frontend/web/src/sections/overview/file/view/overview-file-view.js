@@ -157,13 +157,6 @@ export default function OverviewFileView() {
         File Analysis Dashboard
       </Typography>
 
-      {/* show success if is true */}
-      {success && (
-        <Alert severity="success">
-          File deleted successfully
-        </Alert>
-      )}
-
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Stack spacing={3}>
@@ -184,6 +177,7 @@ export default function OverviewFileView() {
             />
 
             {error && <Alert severity="error">{error}</Alert>}
+            {success && (<Alert severity="success"> File deleted successfully </Alert>)}
 
             {isLoading && (
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -195,14 +189,7 @@ export default function OverviewFileView() {
               Analysis Status : <div className='analysisStatus'><p className="aStat" ref={aStatRef} /></div>
             </Typography>
             <Typography variant="h6">Uploaded Files :</Typography>
-            {/* <Button
-              variant="contained"
-              color="primary"
-              onClick={handleCheckAllAnalysis}
-              disabled={isLoading}
-            >
-              Check All Analysis Results
-            </Button> */}
+
             <Grid container spacing={2}>
               {files.map((file) => (
                 <Grid item xs={12} sm={6} md={4} key={file.id}>
