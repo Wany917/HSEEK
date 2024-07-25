@@ -9,7 +9,6 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
-import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { useAuthContext } from 'src/auth/hooks';
@@ -29,10 +28,10 @@ const OPTIONS = [
   //   label: 'Profile',
   //   linkTo: paths.dashboard.user.profile,
   // },
-  {
-    label: 'Settings',
-    linkTo: paths.dashboard.user.account,
-  },
+  // {
+  //   label: 'Settings',
+  //   linkTo: paths.dashboard.user.account,
+  // },
 ];
 
 // ----------------------------------------------------------------------
