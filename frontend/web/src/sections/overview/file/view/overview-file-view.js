@@ -98,7 +98,7 @@ export default function OverviewFileView() {
     } finally {
       setIsLoading(false);
 
-      await wait(25000);
+      await wait(1000);
       while(!areFilesFetched){
 
         handleCheckAllAnalysis();
