@@ -74,7 +74,6 @@ export default function OverviewFileView() {
       await Promise.all(uploadPromises);
       fetchFiles();
       if (aStatRef.current) {
-        invertLoadingVisibility()
         aStatRef.current.textContent = 'Analysis in still in progress';
       } 
     } catch (err) {
@@ -152,7 +151,6 @@ export default function OverviewFileView() {
       if (aStatRef.current) {
         aStatRef.current.textContent = resultMessage;
       }
-      invertLoadingVisibility();
     }
   }, [fetchFiles]);
 
