@@ -53,7 +53,6 @@ export default function OverviewFileView() {
       console.error('Failed to fetch files:', err);
       setError('Failed to fetch files. Please try again.');
     } finally {
-      setIsLoading(false);
     }
   }, []);
 
