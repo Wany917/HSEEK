@@ -1,0 +1,12 @@
+.aStat {
+    text-align: center;
+}
+
+.loading {
+    visibility:hidden;
+}
+
+.analysisStatus {
+    display: flex;
+    justify-content: left;
+}

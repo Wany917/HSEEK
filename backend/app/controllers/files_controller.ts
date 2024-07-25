@@ -218,10 +218,10 @@ export default class FilesController {
 
       if (!dirExists) {
         console.log(
-          '[checkAnalysisResult] Analysis results not available. The directory may have been cleaned up.'
+          '[checkAnalysisResult] Analysis results not available.'
         )
         return response.ok({
-          message: 'Analysis results not available. The directory may have been cleaned up.',
+          message: 'Analysis results not available.',
         })
       }
 

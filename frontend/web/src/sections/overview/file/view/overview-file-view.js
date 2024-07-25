@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -14,14 +13,13 @@ import IconButton from '@mui/material/IconButton';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
-
 import { sendFile, getFiles, deleteFile, checkAnalysisResult } from 'src/api/file';
-
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
 import { useSettingsContext } from 'src/components/settings';
-
 import FileStorageOverview from '../../../file-manager/file-storage-overview';
+
+import '../styles/overview-file-view.css';
 
 const GB = 1000000000 * 24;
 
@@ -30,9 +28,31 @@ export default function OverviewFileView() {
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const aStatRef = useRef(null); // Use useRef for aStat
+  const loadingRef = useRef(null);
+
+  const resetAnalysisStatusMessage = () => {
+    if (aStatRef.current) {
+      aStatRef.current.textContent = '';
+    }
+  };
+
+  const invertLoadingVisibility = () => {
+    if (loadingRef.current) {
+      let visibility = loadingRef.current.style.visibility;
   
+      if (visibility === "hidden" || visibility === "") {
+        loadingRef.current.style.visibility = "visible";
+      } else {
+        loadingRef.current.style.visibility = "hidden";
+      }
+    }
+  }
+  
+
   const fetchFiles = useCallback(async () => {
     setIsLoading(true);
+    setError(null); // Clear error before fetching files
     try {
       const fetchedFiles = await getFiles();
       setFiles(fetchedFiles);
@@ -42,10 +62,9 @@ export default function OverviewFileView() {
           newAnalysisResults[file.filename] = file.analysisResult;
         }
       });
-      setAnalysisResults(newAnalysisResults);
       setError(null);
     } catch (err) {
-      console.error('Error fetching files:', err);
+      console.error('Failed to fetch files:', err);
       setError('Failed to fetch files. Please try again.');
     } finally {
       setIsLoading(false);
@@ -56,19 +75,39 @@ export default function OverviewFileView() {
     fetchFiles();
   }, [fetchFiles]);
 
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  let areFilesFetched = false;
 
   const handleDrop = useCallback(async (acceptedFiles) => {
+    setError(null);  // Clear error before starting upload
     setIsLoading(true);
+    resetAnalysisStatusMessage();
+    let wasError = false;
     try {
       const uploadPromises = acceptedFiles.map((file) => sendFile(file));
       await Promise.all(uploadPromises);
       fetchFiles();
-      setError(null);
+      if (aStatRef.current) {
+        invertLoadingVisibility()
+        aStatRef.current.textContent = 'Analysis in progress';
+      } 
     } catch (err) {
+      wasError = true;
       console.error('Error uploading file:', err);
       setError('Failed to upload file. Please try again.');
     } finally {
       setIsLoading(false);
+
+      await wait(25000);
+      while(!areFilesFetched){
+
+        handleCheckAllAnalysis();
+        await wait(2000);
+
+      }
+      if (aStatRef.current && wasError){
+        aStatRef.current.textContent = 'Error uploading file !';
+      }
     }
   }, [fetchFiles]);
 
@@ -84,10 +123,10 @@ export default function OverviewFileView() {
 
   const handleDelete = useCallback(async (fileName) => {
     setIsLoading(true);
+    setError(null);  // Clear error before starting delete
     try {
       await deleteFile(fileName);
       fetchFiles();
-      setError(null);
     } catch (err) {
       console.error('Error deleting file:', err);
       setError('Failed to delete file. Please try again.');
@@ -97,18 +136,23 @@ export default function OverviewFileView() {
   }, [fetchFiles]);
 
   const handleCheckAllAnalysis = useCallback(async () => {
+    resetAnalysisStatusMessage();
     setIsLoading(true);
-    setError(null);
+    setError(null);  // Clear error before starting analysis check
+    let resultMessage = '';
     try {
       const result = await checkAnalysisResult();
-      console.log('Analysis results:', result);
-      // Rafraîchir la liste des fichiers pour obtenir les nouveaux résultats
+      resultMessage = result.message;
       await fetchFiles();
+      areFilesFetched = true;
     } catch (err) {
-      console.error('Error checking analysis results:', err);
       setError('Failed to check analysis results. Please try again.');
     } finally {
       setIsLoading(false);
+      if (aStatRef.current) {
+        aStatRef.current.textContent = resultMessage;
+      }
+      invertLoadingVisibility();
     }
   }, [fetchFiles]);
 
@@ -162,16 +206,18 @@ export default function OverviewFileView() {
               </Box>
             )}
 
-            <Typography variant="h6">Uploaded Files:</Typography>
-            <Button
+            <Typography variant="h6">
+              Analysis Status : <div className='analysisStatus'><p className="aStat" ref={aStatRef}></p><img ref={loadingRef} className="loading" src="/assets/images/loading.gif" heigt="75" width="75"/></div>
+            </Typography>
+            <Typography variant="h6">Uploaded Files :</Typography>
+            {/* <Button
               variant="contained"
               color="primary"
               onClick={handleCheckAllAnalysis}
               disabled={isLoading}
             >
               Check All Analysis Results
-            </Button>
-
+            </Button> */}
             <Grid container spacing={2}>
               {files.map((file) => (
                 <Grid item xs={12} sm={6} md={4} key={file.id}>
@@ -186,7 +232,7 @@ export default function OverviewFileView() {
                             Known viruses: {file.analysisResult.knownViruses}
                           </Typography>
                           <Typography variant="body2">
-                            Scanned files: {file.analysisResult.scannedFiles}
+                            Files scanned: {file.analysisResult.scannedFiles}
                           </Typography>
                           <Typography variant="body2">
                             Infected files: {file.analysisResult.infectedFiles}
@@ -197,7 +243,7 @@ export default function OverviewFileView() {
                         </Box>
                       ) : (
                         <Typography variant="body2" color="text.secondary">
-                          No analysis results available
+                          No analysis result available
                         </Typography>
                       )}
                     </CardContent>
