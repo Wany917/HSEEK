@@ -93,11 +93,11 @@ export default function OverviewFileView() {
         await wait(2000);
 
       }
-      setIsLoading(false);
       aStatRef.current.textContent = "Analysis Finished !"
       fetchFiles();
 
     }
+    setIsLoading(false);
   }, [fetchFiles]);
 
   const handleDownload = useCallback((fileName) => {
