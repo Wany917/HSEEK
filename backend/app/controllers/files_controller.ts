@@ -140,11 +140,16 @@ export default class FilesController {
     }
   }
 
-  async deleteInScanResult({ auth, params, response }: HttpContext) {
+  async deleteInScanResult({ auth, fileId, response }: HttpContext) {
     const user = auth.user!
 
     try {
-      await ScanResult.query().where('userId', user.id).where('id', params.id).delete()
+      const result = await ScanResult.query()
+        .where('userId', user.id)
+        .where('id', fileId)
+        .firstOrFail()
+
+      await result.delete()
       return response.ok({ message: 'Analysis result deleted successfully' })
     } catch (error) {
       console.error(`Error deleting analysis result: ${error}`)
