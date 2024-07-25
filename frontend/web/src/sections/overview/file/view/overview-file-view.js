@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import {
-  PDFViewer,
   Document,
   Page,
   Text,
@@ -29,27 +28,86 @@ import '../styles/overview-file-view.css';
 import FileStorageOverview from '../../../file-manager/file-storage-overview';
 
 const styles = StyleSheet.create({
-  page: { padding: 30 },
-  section: { margin: 10, padding: 10, fontSize: 12 },
+  page: {
+    padding: 30,
+  },
+  section: {
+    margin: 10,
+    padding: 10,
+    fontSize: 12,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  table: {
+    display: 'table',
+    width: 'auto',
+    margin: 'auto',
+  },
+  tableRow: {
+    flexDirection: 'row',
+  },
+  tableCol: {
+    width: '50%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#000',
+    padding: 5,
+  },
+  tableCell: {
+    margin: 'auto',
+    fontSize: 10,
+  },
 });
 
 const FileAnalysisDocument = ({ file }) => (
   <Document>
     <Page style={styles.page}>
-      <View style={styles.section}>
-        <Text>Filename: {file.filename}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text>Known viruses: {file.analysisResult.knownViruses}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text>Files scanned: {file.analysisResult.scannedFiles}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text>Infected files: {file.analysisResult.infectedFiles}</Text>
-      </View>
-      <View style={styles.section}>
-        <Text>Scan time: {file.analysisResult.scanTime} seconds</Text>
+      <Text style={styles.title}>HollowSeek: Analysis Report</Text>
+      <View style={styles.table}>
+        <View style={styles.tableRow}>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>Filename</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>{file.filename}</Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>Known viruses</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>{file.analysisResult.knownViruses}</Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>Files scanned</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>{file.analysisResult.scannedFiles}</Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>Infected files</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>{file.analysisResult.infectedFiles}</Text>
+          </View>
+        </View>
+        <View style={styles.tableRow}>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>Scan time</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text style={styles.tableCell}>{file.analysisResult.scanTime} seconds</Text>
+          </View>
+        </View>
       </View>
     </Page>
   </Document>
