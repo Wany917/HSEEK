@@ -2,13 +2,14 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import {
-  Document,
+  pdf,
   Page,
   Text,
   View,
+  Document,
   StyleSheet,
-  pdf,
 } from '@react-pdf/renderer';
+
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -20,10 +21,13 @@ import IconButton from '@mui/material/IconButton';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
+
 import { sendFile, getFiles, deleteInScanResult, checkAnalysisResult } from 'src/api/file';
+
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
 import { useSettingsContext } from 'src/components/settings';
+
 import '../styles/overview-file-view.css';
 import FileStorageOverview from '../../../file-manager/file-storage-overview';
 
@@ -214,7 +218,7 @@ export default function OverviewFileView() {
       const fileUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = fileUrl;
-      let fname = removeExtension(file.filename)
+      const fname = removeExtension(file.filename)
       link.download = `${fname}.pdf`;
       document.body.appendChild(link);
       link.click();
