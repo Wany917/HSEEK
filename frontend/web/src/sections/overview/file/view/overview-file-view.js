@@ -143,13 +143,20 @@ export default function OverviewFileView() {
     }
   }, [fetchFiles]);
 
+  const removeExtension = (filename) => {
+    const parts = filename.split('.');
+    parts.pop();
+    return parts.join('.');
+  };
+
   const handleDownload = useCallback(
     async (file) => {
       const blob = await pdf(<FileAnalysisDocument file={file} />).toBlob();
       const fileUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = fileUrl;
-      link.download = `${file.filename}.pdf`;
+      let fname = removeExtension(filename)
+      link.download = `${fname}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
