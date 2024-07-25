@@ -72,7 +72,7 @@ export default function OverviewFileView() {
       await Promise.all(uploadPromises);
       fetchFiles();
       if (aStatRef.current) {
-        aStatRef.current.textContent = 'Analysis in still in progress';
+        aStatRef.current.textContent = 'Analysis is still in progress';
       } 
     } catch (err) {
       wasError = true;
