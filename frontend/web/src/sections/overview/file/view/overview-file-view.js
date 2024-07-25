@@ -61,21 +61,10 @@ export default function OverviewFileView() {
   }, [fetchFiles]);
 
   const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-  const [areFilesFetched, setAreFilesFetched] = useState(false);
-
-  const handleCheckAllAnalysis = useCallback(async () => {
-    setError(null);
-    try {
-      const result = await checkAnalysisResult();
-      await fetchFiles();
-      setAreFilesFetched(result?.result || false);
-    } catch (err) {
-      setError('Failed to check analysis results. Please try again.');
-    }
-  }, [fetchFiles]);
+  let areFilesFetched = false;
 
   const handleDrop = useCallback(async (acceptedFiles) => {
-    setError(null);
+    setError(null);  // Clear error before starting upload
     setIsLoading(true);
     resetAnalysisStatusMessage();
     let wasError = false;
@@ -84,28 +73,30 @@ export default function OverviewFileView() {
       await Promise.all(uploadPromises);
       fetchFiles();
       if (aStatRef.current) {
-        aStatRef.current.textContent = 'Analysis is still in progress';
+        aStatRef.current.textContent = 'Analysis in still in progress';
       } 
-  
-      const checkInterval = setInterval(async () => {
-        await handleCheckAllAnalysis();
-        if (areFilesFetched) {
-          clearInterval(checkInterval);
-          aStatRef.current.textContent = "Analysis Finished!";
-          fetchFiles();
-          setIsLoading(false);
-        }
-      }, 2000);
-  
     } catch (err) {
       wasError = true;
+      console.error('Error uploading file:', err);
       setError('Failed to upload file. Please try again.');
     } finally {
+
       if (aStatRef.current && wasError){
-        setIsLoading(false);
+        aStatRef.current.textContent = 'Error uploading file !';
       }
+
+      await wait(1000);
+      while(!areFilesFetched){
+
+        handleCheckAllAnalysis();
+        await wait(2000);
+
+      }
+      aStatRef.current.textContent = "Analysis Finished !"
+      fetchFiles();
+      setIsLoading(false);
     }
-  }, [fetchFiles, handleCheckAllAnalysis, areFilesFetched]);
+  }, [fetchFiles]);
 
   const handleDownload = useCallback((fileName) => {
     const fileUrl = `${process.env.NEXT_PUBLIC_API_URL}/files/${fileName}`;
@@ -128,6 +119,25 @@ export default function OverviewFileView() {
       setError('Failed to delete file. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  }, [fetchFiles]);
+
+  const handleCheckAllAnalysis = useCallback(async () => {
+    setError(null);  // Clear error before starting analysis check
+    let resultMessage = '';
+    try {
+      const result = await checkAnalysisResult();
+      resultMessage = result.message;
+      await fetchFiles();
+      if (result?.result){
+        areFilesFetched = true;
+      }else{
+        areFilesFetched = false;
+        return;
+      }
+    } catch (err) {
+      setError('Failed to check analysis results. Please try again.');
+    } finally {
     }
   }, [fetchFiles]);
 
