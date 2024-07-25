@@ -1,7 +1,15 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
-
+import {
+  PDFViewer,
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  pdf,
+} from '@react-pdf/renderer';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -13,31 +21,55 @@ import IconButton from '@mui/material/IconButton';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
-
 import { sendFile, getFiles, deleteInScanResult, checkAnalysisResult } from 'src/api/file';
-
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
 import { useSettingsContext } from 'src/components/settings';
-
 import '../styles/overview-file-view.css';
 import FileStorageOverview from '../../../file-manager/file-storage-overview';
+
+const styles = StyleSheet.create({
+  page: { padding: 30 },
+  section: { margin: 10, padding: 10, fontSize: 12 },
+});
+
+const FileAnalysisDocument = ({ file }) => (
+  <Document>
+    <Page style={styles.page}>
+      <View style={styles.section}>
+        <Text>Filename: {file.filename}</Text>
+      </View>
+      <View style={styles.section}>
+        <Text>Known viruses: {file.analysisResult.knownViruses}</Text>
+      </View>
+      <View style={styles.section}>
+        <Text>Files scanned: {file.analysisResult.scannedFiles}</Text>
+      </View>
+      <View style={styles.section}>
+        <Text>Infected files: {file.analysisResult.infectedFiles}</Text>
+      </View>
+      <View style={styles.section}>
+        <Text>Scan time: {file.analysisResult.scanTime} seconds</Text>
+      </View>
+    </Page>
+  </Document>
+);
 
 export default function OverviewFileView() {
   const settings = useSettingsContext();
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const aStatRef = useRef(null); // Use useRef for aStat
+  const aStatRef = useRef(null);
   const [success, setSuccess] = useState(false);
   const resetAnalysisStatusMessage = () => {
     if (aStatRef.current) {
       aStatRef.current.textContent = '';
     }
-  };  
+  };
 
   const fetchFiles = useCallback(async () => {
-    setError(null); // Clear error before fetching files
+    setError(null);
     try {
       const fetchedFiles = await getFiles();
       setFiles(fetchedFiles);
@@ -58,86 +90,92 @@ export default function OverviewFileView() {
     fetchFiles();
   }, [fetchFiles]);
 
-  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   let areFilesFetched = false;
 
-  const handleDrop = useCallback(async (acceptedFiles) => {
-    setError(null);  // Clear error before starting upload
-    setIsLoading(true);
-    resetAnalysisStatusMessage();
-    let wasError = false;
-    try {
-      const uploadPromises = acceptedFiles.map((file) => sendFile(file));
-      await Promise.all(uploadPromises);
-      fetchFiles();
-      if (aStatRef.current) {
-        aStatRef.current.textContent = 'Analysis is still in progress';
-      } 
-    } catch (err) {
-      wasError = true;
-      setError('Failed to upload file. Please try again.');
-    } finally {
-
-      if (aStatRef.current && wasError){
-        aStatRef.current.textContent = 'Error uploading file !';
+  const handleDrop = useCallback(
+    async (acceptedFiles) => {
+      setError(null);
+      setIsLoading(true);
+      resetAnalysisStatusMessage();
+      let wasError = false;
+      try {
+        const uploadPromises = acceptedFiles.map((file) => sendFile(file));
+        await Promise.all(uploadPromises);
+        fetchFiles();
+        if (aStatRef.current) {
+          aStatRef.current.textContent = 'Analysis is still in progress';
+        }
+      } catch (err) {
+        wasError = true;
+        setError('Failed to upload file. Please try again.');
+      } finally {
+        if (aStatRef.current && wasError) {
+          aStatRef.current.textContent = 'Error uploading file !';
+        }
+        await wait(1000);
+        while (!areFilesFetched) {
+          handleCheckAllAnalysis();
+          await wait(2000);
+        }
+        setIsLoading(false);
+        aStatRef.current.textContent = 'Analysis Finished !';
+        fetchFiles();
       }
-
-      await wait(1000);
-      while(!areFilesFetched){
-
-        handleCheckAllAnalysis();
-        await wait(2000);
-
-      }
-      setIsLoading(false);
-      aStatRef.current.textContent = "Analysis Finished !"
-      fetchFiles();
-    }
-  }, [fetchFiles]);
+    },
+    [fetchFiles]
+  );
 
   const handleCheckAllAnalysis = useCallback(async () => {
-    setError(null); 
+    setError(null);
     let resultMessage = '';
     try {
       const result = await checkAnalysisResult();
       resultMessage = result.message;
       await fetchFiles();
-      if (result?.result){
+      if (result?.result) {
         areFilesFetched = true;
-      }else{
+      } else {
         areFilesFetched = false;
-        
       }
     } catch (err) {
       setError('Failed to check analysis results. Please try again.');
     }
   }, [fetchFiles]);
 
-  const handleDownload = useCallback((fileName) => {
-    const fileUrl = `${process.env.NEXT_PUBLIC_API_URL}/files/${fileName}`;
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }, []);
+  const handleDownload = useCallback(
+    async (file) => {
+      const blob = await pdf(<FileAnalysisDocument file={file} />).toBlob();
+      const fileUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = `${file.filename}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(fileUrl);
+    },
+    []
+  );
 
-  const handleDelete = useCallback(async (fileId) => {
-    setIsLoading(true);
-    setError(null);
-    setSuccess(false);
-    try {
-      await deleteInScanResult(fileId);
-      await fetchFiles();
-      setSuccess(true);
-    } catch (err) {
-      console.error('Error deleting file:', err);
-      setError('Failed to delete file. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchFiles]);
+  const handleDelete = useCallback(
+    async (fileId) => {
+      setIsLoading(true);
+      setError(null);
+      setSuccess(false);
+      try {
+        await deleteInScanResult(fileId);
+        await fetchFiles();
+        setSuccess(true);
+      } catch (err) {
+        console.error('Error deleting file:', err);
+        setError('Failed to delete file. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fetchFiles]
+  );
 
   const renderStorageOverview = (
     <FileStorageOverview
@@ -177,7 +215,7 @@ export default function OverviewFileView() {
             />
 
             {error && <Alert severity="error">{error}</Alert>}
-            {success && (<Alert severity="success"> File deleted successfully </Alert>)}
+            {success && <Alert severity="success"> File deleted successfully </Alert>}
 
             {isLoading && (
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -222,7 +260,7 @@ export default function OverviewFileView() {
                     <CardActions disableSpacing>
                       <IconButton
                         aria-label="download"
-                        onClick={() => handleDownload(file.filename)}
+                        onClick={() => handleDownload(file)}
                       >
                         <Iconify icon="mdi:download" />
                       </IconButton>
