@@ -49,7 +49,7 @@ router
     router.get('/check-analysis', [FilesController, 'checkAnalysisResult']).use(middleware.auth())
     router.get('/analysis/:id', [FilesController, 'getAnalysisResult']).use(middleware.auth())
     router.get('/:fileId', [FilesController, 'read']).use(middleware.auth())
-    router.delete('/:fileId', [FilesController, 'delete']).use(middleware.auth())
+    router.delete('/:fileId', [FilesController, 'deleteInScanResult']).use(middleware.auth())
   })
   .prefix('files')
 

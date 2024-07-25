@@ -39,9 +39,9 @@ export async function checkAnalysisResult() {
     throw error;
   }
 }
-export async function deleteFile(fileName) {
-  console.log('Deleting file:', fileName);
-  const response = await axios.delete(`/files/${fileName}`);
+export async function deleteInScanResult(fileId) {
+  console.log('Deleting file:', fileId);
+  const response = await axios.delete(`/files/${fileId}`);
   console.log('Delete file response:', response.data);
   return response.data;
 }

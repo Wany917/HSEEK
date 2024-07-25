@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
+
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
-import { Button } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import Container from '@mui/material/Container';
@@ -13,13 +13,15 @@ import IconButton from '@mui/material/IconButton';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
-import { sendFile, getFiles, deleteFile, checkAnalysisResult } from 'src/api/file';
+
+import { sendFile, getFiles, deleteInScanResult, checkAnalysisResult } from 'src/api/file';
+
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
 import { useSettingsContext } from 'src/components/settings';
-import FileStorageOverview from '../../../file-manager/file-storage-overview';
 
 import '../styles/overview-file-view.css';
+import FileStorageOverview from '../../../file-manager/file-storage-overview';
 
 export default function OverviewFileView() {
   const settings = useSettingsContext();
@@ -27,7 +29,7 @@ export default function OverviewFileView() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const aStatRef = useRef(null); // Use useRef for aStat
-
+  const [success, setSuccess] = useState(false);
   const resetAnalysisStatusMessage = () => {
     if (aStatRef.current) {
       aStatRef.current.textContent = '';
@@ -104,7 +106,7 @@ export default function OverviewFileView() {
         areFilesFetched = true;
       }else{
         areFilesFetched = false;
-        return;
+        
       }
     } catch (err) {
       setError('Failed to check analysis results. Please try again.');
@@ -125,8 +127,9 @@ export default function OverviewFileView() {
     setIsLoading(true);
     setError(null);  // Clear error before starting delete
     try {
-      await deleteFile(fileName);
+      await deleteInScanResult(fileName);
       fetchFiles();
+      setSuccess(true);
     } catch (err) {
       console.error('Error deleting file:', err);
       setError('Failed to delete file. Please try again.');
@@ -152,6 +155,13 @@ export default function OverviewFileView() {
       <Typography variant="h4" sx={{ mb: 5 }}>
         File Analysis Dashboard
       </Typography>
+
+      {/* show success if is true */}
+      {success && (
+        <Alert severity="success">
+          File deleted successfully
+        </Alert>
+      )}
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
@@ -181,7 +191,7 @@ export default function OverviewFileView() {
             )}
 
             <Typography variant="h6">
-              Analysis Status : <div className='analysisStatus'><p className="aStat" ref={aStatRef}></p></div>
+              Analysis Status : <div className='analysisStatus'><p className="aStat" ref={aStatRef} /></div>
             </Typography>
             <Typography variant="h6">Uploaded Files :</Typography>
             {/* <Button

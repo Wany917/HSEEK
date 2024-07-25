@@ -140,6 +140,18 @@ export default class FilesController {
     }
   }
 
+  async deleteInScanResult({ auth, params, response }: HttpContext) {
+    const user = auth.user!
+
+    try {
+      await ScanResult.query().where('userId', user.id).where('id', params.id).delete()
+      return response.ok({ message: 'Analysis result deleted successfully' })
+    } catch (error) {
+      console.error(`Error deleting analysis result: ${error}`)
+      return response.notFound('Analysis result not found')
+    }
+  }
+
   private parseAnalysisResult(result: string) {
     const lines = result.split('\n')
     const parsedResult: any = {}
@@ -217,9 +229,7 @@ export default class FilesController {
       console.log(`[checkAnalysisResult] User directory exists: ${dirExists}`)
 
       if (!dirExists) {
-        console.log(
-          '[checkAnalysisResult] Analysis results not available.'
-        )
+        console.log('[checkAnalysisResult] Analysis results not available.')
         return response.ok({
           message: 'Analysis results not available.',
         })
