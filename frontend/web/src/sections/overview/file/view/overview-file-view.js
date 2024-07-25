@@ -98,6 +98,10 @@ export default function OverviewFileView() {
     } finally {
       setIsLoading(false);
 
+      if (aStatRef.current && wasError){
+        aStatRef.current.textContent = 'Error uploading file !';
+      }
+
       await wait(1000);
       while(!areFilesFetched){
 
@@ -105,9 +109,10 @@ export default function OverviewFileView() {
         await wait(2000);
 
       }
-      if (aStatRef.current && wasError){
-        aStatRef.current.textContent = 'Error uploading file !';
-      }
+
+      aStatRef.current.textContent = "Analysis Finished !"
+      fetchFiles();
+
     }
   }, [fetchFiles]);
 
@@ -136,7 +141,6 @@ export default function OverviewFileView() {
   }, [fetchFiles]);
 
   const handleCheckAllAnalysis = useCallback(async () => {
-    resetAnalysisStatusMessage();
     setIsLoading(true);
     setError(null);  // Clear error before starting analysis check
     let resultMessage = '';
@@ -147,6 +151,13 @@ export default function OverviewFileView() {
       if (fetchFiles()){
         areFilesFetched = true;
       }else{
+        areFilesFetched = false;
+        return;
+      }
+      if (result?.result){
+        areFilesFetched = true;
+      }else{
+        areFilesFetched = false;
         return;
       }
     } catch (err) {
