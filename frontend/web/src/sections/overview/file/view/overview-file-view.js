@@ -21,8 +21,6 @@ import FileStorageOverview from '../../../file-manager/file-storage-overview';
 
 import '../styles/overview-file-view.css';
 
-const GB = 1000000000 * 24;
-
 export default function OverviewFileView() {
   const settings = useSettingsContext();
   const [files, setFiles] = useState([]);
@@ -141,14 +139,9 @@ export default function OverviewFileView() {
 
   const renderStorageOverview = (
     <FileStorageOverview
-      total={GB}
-      chart={{
-        series: 76,
-      }}
       data={[
         {
           name: 'Files',
-          usedStorage: GB / 2,
           filesCount: files.length,
           icon: <Box component="img" src="/assets/icons/files/ic_file.svg" />,
         },
