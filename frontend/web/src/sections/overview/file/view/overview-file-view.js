@@ -133,12 +133,6 @@ export default function OverviewFileView() {
       const result = await checkAnalysisResult();
       resultMessage = result.message;
       await fetchFiles();
-      if (fetchFiles()){
-        areFilesFetched = true;
-      }else{
-        areFilesFetched = false;
-        return;
-      }
       if (result?.result){
         areFilesFetched = true;
       }else{
