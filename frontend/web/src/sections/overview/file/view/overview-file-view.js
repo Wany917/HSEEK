@@ -123,12 +123,13 @@ export default function OverviewFileView() {
     document.body.removeChild(link);
   }, []);
 
-  const handleDelete = useCallback(async (fileName) => {
+  const handleDelete = useCallback(async (fileId) => {
     setIsLoading(true);
-    setError(null);  // Clear error before starting delete
+    setError(null);
+    setSuccess(false);
     try {
-      await deleteInScanResult(fileName);
-      fetchFiles();
+      await deleteInScanResult(fileId);
+      await fetchFiles();
       setSuccess(true);
     } catch (err) {
       console.error('Error deleting file:', err);

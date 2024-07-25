@@ -41,7 +41,12 @@ export async function checkAnalysisResult() {
 }
 export async function deleteInScanResult(fileId) {
   console.log('Deleting file:', fileId);
-  const response = await axios.delete(`/files/${fileId}`);
-  console.log('Delete file response:', response.data);
-  return response.data;
+  try {
+    const response = await axios.delete(`/files/${fileId}`);
+    console.log('Delete file response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting file:', error.response?.data || error.message);
+    throw error;
+  }
 }
