@@ -63,6 +63,17 @@ export default function OverviewFileView() {
   const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   const [areFilesFetched, setAreFilesFetched] = useState(false);
 
+  const handleCheckAllAnalysis = useCallback(async () => {
+    setError(null);
+    try {
+      const result = await checkAnalysisResult();
+      await fetchFiles();
+      setAreFilesFetched(result?.result || false);
+    } catch (err) {
+      setError('Failed to check analysis results. Please try again.');
+    }
+  }, [fetchFiles]);
+
   const handleDrop = useCallback(async (acceptedFiles) => {
     setError(null);
     setIsLoading(true);
@@ -117,17 +128,6 @@ export default function OverviewFileView() {
       setError('Failed to delete file. Please try again.');
     } finally {
       setIsLoading(false);
-    }
-  }, [fetchFiles]);
-
-  const handleCheckAllAnalysis = useCallback(async () => {
-    setError(null);
-    try {
-      const result = await checkAnalysisResult();
-      await fetchFiles();
-      setAreFilesFetched(result?.result || false);
-    } catch (err) {
-      setError('Failed to check analysis results. Please try again.');
     }
   }, [fetchFiles]);
 
