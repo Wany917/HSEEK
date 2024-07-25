@@ -91,23 +91,23 @@ export function useNavData() {
       // MANAGEMENT
       // ----------------------------------------------------------------------
       {
-        subheader: t('management'),
+        subheader: t(''),
         items: [
           // USER
-          {
-            roles: ['admin'],
-            title: t('user'),
-            path: paths.dashboard.user.root,
-            icon: ICONS.user,
-            children: [
-              // { title: t('profile'), path: paths.dashboard.user.root },
-              // { title: t('cards'), path: paths.dashboard.user.cards },
-              { title: t('list'), path: paths.dashboard.user.list },
-              { title: t('create'), path: paths.dashboard.user.new },
-              { title: t('edit'), path: paths.dashboard.user.demo.edit },
-              { title: t('account'), path: paths.dashboard.user.account },
-            ],
-          },
+          // {
+          //   roles: ['admin'],
+          //   title: t('user'),
+          //   path: paths.dashboard.user.root,
+          //   icon: ICONS.user,
+          //   children: [
+          //     // { title: t('profile'), path: paths.dashboard.user.root },
+          //     // { title: t('cards'), path: paths.dashboard.user.cards },
+          //     { title: t('list'), path: paths.dashboard.user.list },
+          //     { title: t('create'), path: paths.dashboard.user.new },
+          //     { title: t('edit'), path: paths.dashboard.user.demo.edit },
+          //     { title: t('account'), path: paths.dashboard.user.account },
+          //   ],
+          // },
 
           // PRODUCT
           // {
