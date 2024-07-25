@@ -142,18 +142,14 @@ export default class FilesController {
 
   async deleteInScanResult({ auth, params, response }: HttpContext) {
     const user = auth.user!
-
     if (!params.id) {
       return response.badRequest('Missing file ID')
     }
 
     try {
-      const result = await ScanResult.query()
-        .where('userId', user.id)
-        .where('id', params.id)
-        .delete()
+      const result = await ScanResult.query().where(['id', params.id, 'userId', user.id]).delete()
 
-      if (result === 0) {
+      if (!result) {
         return response.notFound('Analysis result not found')
       }
 
@@ -163,6 +159,7 @@ export default class FilesController {
       return response.internalServerError('Failed to delete analysis result')
     }
   }
+
   private parseAnalysisResult(result: string) {
     const lines = result.split('\n')
     const parsedResult: any = {}
