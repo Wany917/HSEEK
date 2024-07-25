@@ -29,26 +29,12 @@ export default function OverviewFileView() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const aStatRef = useRef(null); // Use useRef for aStat
-  const loadingRef = useRef(null);
 
   const resetAnalysisStatusMessage = () => {
     if (aStatRef.current) {
       aStatRef.current.textContent = '';
     }
-  };
-
-  const invertLoadingVisibility = () => {
-    if (loadingRef.current) {
-      let visibility = loadingRef.current.style.visibility;
-  
-      if (visibility === "hidden" || visibility === "") {
-        loadingRef.current.style.visibility = "visible";
-      } else {
-        loadingRef.current.style.visibility = "hidden";
-      }
-    }
-  }
-  
+  };  
 
   const fetchFiles = useCallback(async () => {
     setIsLoading(true);
@@ -89,14 +75,13 @@ export default function OverviewFileView() {
       fetchFiles();
       if (aStatRef.current) {
         invertLoadingVisibility()
-        aStatRef.current.textContent = 'Analysis in progress';
+        aStatRef.current.textContent = 'Analysis in still in progress';
       } 
     } catch (err) {
       wasError = true;
       console.error('Error uploading file:', err);
       setError('Failed to upload file. Please try again.');
     } finally {
-      setIsLoading(false);
 
       if (aStatRef.current && wasError){
         aStatRef.current.textContent = 'Error uploading file !';
@@ -109,7 +94,7 @@ export default function OverviewFileView() {
         await wait(2000);
 
       }
-
+      setIsLoading(false);
       aStatRef.current.textContent = "Analysis Finished !"
       fetchFiles();
 
@@ -222,7 +207,7 @@ export default function OverviewFileView() {
             )}
 
             <Typography variant="h6">
-              Analysis Status : <div className='analysisStatus'><p className="aStat" ref={aStatRef}></p><img ref={loadingRef} className="loading" src="/assets/images/loading.gif" heigt="75" width="75"/></div>
+              Analysis Status : <div className='analysisStatus'><p className="aStat" ref={aStatRef}></p></div>
             </Typography>
             <Typography variant="h6">Uploaded Files :</Typography>
             {/* <Button
