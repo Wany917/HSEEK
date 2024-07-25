@@ -37,7 +37,6 @@ export default function OverviewFileView() {
   };  
 
   const fetchFiles = useCallback(async () => {
-    setIsLoading(true);
     setError(null); // Clear error before fetching files
     try {
       const fetchedFiles = await getFiles();
@@ -77,7 +76,6 @@ export default function OverviewFileView() {
       } 
     } catch (err) {
       wasError = true;
-      console.error('Error uploading file:', err);
       setError('Failed to upload file. Please try again.');
     } finally {
 
@@ -92,9 +90,28 @@ export default function OverviewFileView() {
         await wait(2000);
 
       }
+      setIsLoading(false);
       aStatRef.current.textContent = "Analysis Finished !"
       fetchFiles();
-      setIsLoading(false);
+    }
+  }, [fetchFiles]);
+
+  const handleCheckAllAnalysis = useCallback(async () => {
+    setError(null); 
+    let resultMessage = '';
+    try {
+      const result = await checkAnalysisResult();
+      resultMessage = result.message;
+      await fetchFiles();
+      if (result?.result){
+        areFilesFetched = true;
+      }else{
+        areFilesFetched = false;
+        return;
+      }
+    } catch (err) {
+      setError('Failed to check analysis results. Please try again.');
+    } finally {
     }
   }, [fetchFiles]);
 
@@ -119,25 +136,6 @@ export default function OverviewFileView() {
       setError('Failed to delete file. Please try again.');
     } finally {
       setIsLoading(false);
-    }
-  }, [fetchFiles]);
-
-  const handleCheckAllAnalysis = useCallback(async () => {
-    setError(null);  // Clear error before starting analysis check
-    let resultMessage = '';
-    try {
-      const result = await checkAnalysisResult();
-      resultMessage = result.message;
-      await fetchFiles();
-      if (result?.result){
-        areFilesFetched = true;
-      }else{
-        areFilesFetched = false;
-        return;
-      }
-    } catch (err) {
-      setError('Failed to check analysis results. Please try again.');
-    } finally {
     }
   }, [fetchFiles]);
 
