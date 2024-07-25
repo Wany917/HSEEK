@@ -142,10 +142,6 @@ export default function OverviewFileView() {
     } catch (err) {
       setError('Failed to check analysis results. Please try again.');
     } finally {
-      setIsLoading(false);
-      if (aStatRef.current) {
-        aStatRef.current.textContent = resultMessage;
-      }
     }
   }, [fetchFiles]);
 
