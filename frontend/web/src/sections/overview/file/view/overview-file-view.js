@@ -155,7 +155,7 @@ export default function OverviewFileView() {
       const fileUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = fileUrl;
-      let fname = removeExtension(filename)
+      let fname = removeExtension(file.filename)
       link.download = `${fname}.pdf`;
       document.body.appendChild(link);
       link.click();
