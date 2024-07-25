@@ -50,3 +50,8 @@ export async function deleteInScanResult(fileId) {
     throw error;
   }
 }
+
+export async function scanUrl(url) {
+  const response = await axios.post('/scan-url', { url });
+  return response.data;
+}

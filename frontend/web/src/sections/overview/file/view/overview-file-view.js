@@ -122,6 +122,8 @@ export default function OverviewFileView() {
   const settings = useSettingsContext();
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
+  const [urlToScan, setUrlToScan] = useState('');
+  const [scanResult, setScanResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const aStatRef = useRef(null);
   const [success, setSuccess] = useState(false);
@@ -228,6 +230,23 @@ export default function OverviewFileView() {
     []
   );
 
+
+  const handleUrlScan = async () => {
+    setIsLoading(true);
+    setError(null);
+    setScanResult(null);
+    try {
+      const result = await scanUrl(urlToScan);
+      setScanResult(result);
+      setSuccess(true);
+    } catch (err) {
+      console.error('Error scanning URL:', err);
+      setError('Failed to scan URL. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleDelete = useCallback(
     async (fileId) => {
       setIsLoading(true);
@@ -268,6 +287,41 @@ export default function OverviewFileView() {
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Stack spacing={3}>
+
+          <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Scan URL
+                </Typography>
+                <TextField
+                  fullWidth
+                  value={urlToScan}
+                  onChange={(e) => setUrlToScan(e.target.value)}
+                  placeholder="Enter URL to scan"
+                  variant="outlined"
+                  sx={{ mb: 2 }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={handleUrlScan}
+                  disabled={isLoading || !urlToScan}
+                >
+                  Scan URL
+                </Button>
+              </CardContent>
+            </Card>
+
+            {scanResult && (
+              <Alert
+                severity={scanResult.result.verdicts.overall.malicious ? 'error' : 'success'}
+                sx={{ mt: 2 }}
+              >
+                {scanResult.result.verdicts.overall.malicious
+                  ? 'The URL is potentially malicious.'
+                  : 'The URL appears to be safe.'}
+              </Alert>
+            )}
+
             <UploadBox
               onDrop={handleDrop}
               placeholder={
@@ -285,7 +339,7 @@ export default function OverviewFileView() {
             />
 
             {error && <Alert severity="error">{error}</Alert>}
-            {success && <Alert severity="success"> File deleted successfully </Alert>}
+            {(success && <Alert severity="success"> File deleted successfully </Alert>) ? null : null}
 
             {isLoading && (
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
