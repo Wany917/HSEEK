@@ -305,4 +305,53 @@ export default class FilesController {
       return response.internalServerError('Error checking analysis result')
     }
   }
+
+  async scanUrl({ request, response }: HttpContext) {
+    const { url } = request.all()
+    const apiKey = 'c4133788-b03e-4935-91f0-0e9d4dbad4b0'
+
+    try {
+      const scanResponse = await fetch('https://urlscan.io/api/v1/scan/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'API-Key': apiKey,
+        },
+        body: JSON.stringify({
+          url,
+          visibility: 'public',
+          tags: ['hollowseek'],
+        }),
+      })
+
+      if (!scanResponse.ok) {
+        throw new Error(`HTTP error! status: ${scanResponse.status}`)
+      }
+
+      const scanData = await scanResponse.json()
+
+      // Attendre quelques secondes pour que l'analyse soit terminée
+      await new Promise((resolve) => setTimeout(resolve, 10000))
+
+      // Récupérer les résultats de l'analyse
+      const resultResponse = await fetch(`https://urlscan.io/api/v1/result/${scanData.uuid}/`)
+
+      if (!resultResponse.ok) {
+        throw new Error(`HTTP error! status: ${resultResponse.status}`)
+      }
+
+      const resultData = await resultResponse.json()
+
+      return response.ok({
+        message: 'URL scanned successfully',
+        result: resultData,
+      })
+    } catch (error) {
+      console.error('Error scanning URL:', error)
+      return response.internalServerError({
+        message: 'Failed to scan URL',
+        error: error.message,
+      })
+    }
+  }
 }

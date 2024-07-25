@@ -64,3 +64,4 @@ router
   .prefix('invoices')
 
 router.resource('users', UsersController).only(['index', 'show']).use('*', middleware.auth())
+router.post('/scan-url', [FilesController, 'scanUrl']).use(middleware.auth())

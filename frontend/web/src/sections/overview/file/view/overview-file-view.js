@@ -24,7 +24,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { sendFile, getFiles, deleteInScanResult, checkAnalysisResult } from 'src/api/file';
+import { scanUrl, sendFile, getFiles, deleteInScanResult, checkAnalysisResult } from 'src/api/file';
 
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
@@ -289,7 +289,16 @@ export default function OverviewFileView() {
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Stack spacing={3}>
-
+          {scanResult && (
+              <Alert
+                severity={scanResult.result.verdicts.overall.malicious ? 'error' : 'success'}
+                sx={{ mt: 2 }}
+              >
+                {scanResult.result.verdicts.overall.malicious
+                  ? 'The URL is potentially malicious.'
+                  : 'The URL appears to be safe.'}
+              </Alert>
+            )}
           <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -312,17 +321,6 @@ export default function OverviewFileView() {
                 </Button>
               </CardContent>
             </Card>
-
-            {scanResult && (
-              <Alert
-                severity={scanResult.result.verdicts.overall.malicious ? 'error' : 'success'}
-                sx={{ mt: 2 }}
-              >
-                {scanResult.result.verdicts.overall.malicious
-                  ? 'The URL is potentially malicious.'
-                  : 'The URL appears to be safe.'}
-              </Alert>
-            )}
 
             <UploadBox
               onDrop={handleDrop}
