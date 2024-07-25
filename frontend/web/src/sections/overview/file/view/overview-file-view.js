@@ -27,14 +27,6 @@ import { useSettingsContext } from 'src/components/settings';
 import '../styles/overview-file-view.css';
 import FileStorageOverview from '../../../file-manager/file-storage-overview';
 
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from '@react-pdf/renderer';
-
 const styles = StyleSheet.create({
   page: {
     padding: 30,
@@ -54,7 +46,7 @@ const styles = StyleSheet.create({
     display: 'table',
     width: 'auto',
     margin: 'auto',
-    marginTop: 50, // Adjust this value to position the table closer or further from the title
+    marginTop: 50,
   },
   tableRow: {
     flexDirection: 'row',
