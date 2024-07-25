@@ -1,14 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
-import {
-  pdf,
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-} from '@react-pdf/renderer';
+import { pdf, Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -126,6 +119,8 @@ export default function OverviewFileView() {
   const [error, setError] = useState(null);
   const [urlToScan, setUrlToScan] = useState('');
   const [scanResult, setScanResult] = useState(null);
+  const [domContent, setDomContent] = useState(null);
+  const [screenshotUrl, setScreenshotUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const aStatRef = useRef(null);
   const [success, setSuccess] = useState(false);
@@ -216,31 +211,37 @@ export default function OverviewFileView() {
     return parts.join('.');
   };
 
-  const handleDownload = useCallback(
-    async (file) => {
-      const blob = await pdf(<FileAnalysisDocument file={file} />).toBlob();
-      const fileUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = fileUrl;
-      const fname = removeExtension(file.filename)
-      link.download = `${fname}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(fileUrl);
-    },
-    []
-  );
-
+  const handleDownload = useCallback(async (file) => {
+    const blob = await pdf(<FileAnalysisDocument file={file} />).toBlob();
+    const fileUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    const fname = removeExtension(file.filename);
+    link.download = `${fname}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(fileUrl);
+  }, []);
 
   const handleUrlScan = async () => {
     setIsLoading(true);
     setError(null);
     setScanResult(null);
+    setScreenshotUrl(null);
+    setDomContent(null);
+    
     try {
       const result = await scanUrl(urlToScan);
       setScanResult(result);
       setSuccess(true);
+
+      const screenshotUrl = await getUrlScreenshot(result.uuid);
+      setScreenshotUrl(screenshotUrl);
+
+      const domContent = await getUrlDomContent(result.uuid);
+      setDomContent(domContent);
+
     } catch (err) {
       console.error('Error scanning URL:', err);
       setError('Failed to scan URL. Please try again.');
@@ -289,7 +290,7 @@ export default function OverviewFileView() {
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Stack spacing={3}>
-          {scanResult && (
+            {scanResult && (
               <Alert
                 severity={scanResult.result.verdicts.overall.malicious ? 'error' : 'success'}
                 sx={{ mt: 2 }}
@@ -299,7 +300,8 @@ export default function OverviewFileView() {
                   : 'The URL appears to be safe.'}
               </Alert>
             )}
-          <Card>
+
+            <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Scan URL
@@ -339,7 +341,7 @@ export default function OverviewFileView() {
             />
 
             {error && <Alert severity="error">{error}</Alert>}
-            {(success && <Alert severity="success"> File deleted successfully </Alert>) ? null : null}
+            {success && <Alert severity="success"> File deleted successfully </Alert> ? null : null}
 
             {isLoading && (
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -348,7 +350,10 @@ export default function OverviewFileView() {
             )}
 
             <Typography variant="h6">
-              Analysis Status : <div className='analysisStatus'><p className="aStat" ref={aStatRef} /></div>
+              Analysis Status :{' '}
+              <div className="analysisStatus">
+                <p className="aStat" ref={aStatRef} />
+              </div>
             </Typography>
             <Typography variant="h6">Uploaded Files :</Typography>
 
@@ -382,10 +387,7 @@ export default function OverviewFileView() {
                       )}
                     </CardContent>
                     <CardActions disableSpacing>
-                      <IconButton
-                        aria-label="download"
-                        onClick={() => handleDownload(file)}
-                      >
+                      <IconButton aria-label="download" onClick={() => handleDownload(file)}>
                         <Iconify icon="mdi:download" />
                       </IconButton>
                       <IconButton aria-label="delete" onClick={() => handleDelete(file.id)}>
@@ -400,9 +402,30 @@ export default function OverviewFileView() {
         </Grid>
 
         <Grid item xs={12} md={4}>
-          {renderStorageOverview}
+          {screenshotUrl ? (
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Site Screenshot
+                </Typography>
+                <img src={screenshotUrl} alt="Site Screenshot" style={{ width: '100%' }} />
+              </CardContent>
+            </Card>
+          ) : renderStorageOverview}
         </Grid>
       </Grid>
+      {domContent && (
+        <Card sx={{ mt: 5 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Site DOM
+            </Typography>
+            <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+              {domContent}
+            </pre>
+          </CardContent>
+        </Card>
+      )}
     </Container>
   );
 }

@@ -55,3 +55,13 @@ export async function scanUrl(url) {
   const response = await axios.post('/scan-url', { url });
   return response.data;
 }
+
+export async function getUrlScreenshot(uuid) {
+  const response = await fetch(`https://urlscan.io/screenshots/${uuid}.png`);
+  return response.url;
+}
+
+export async function getUrlDom(uuid) {
+  const response = await fetch(`https://urlscan.io/dom/${uuid}/`);
+  return response.text();
+}
