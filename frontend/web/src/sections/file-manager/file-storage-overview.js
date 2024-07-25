@@ -6,8 +6,6 @@ import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import ListItemText from '@mui/material/ListItemText';
 
-import { fData } from 'src/utils/format-number';
-
 // ----------------------------------------------------------------------
 
 export default function FileStorageOverview({ data, total, ...other }) {
@@ -16,10 +14,10 @@ export default function FileStorageOverview({ data, total, ...other }) {
   return (
     <Card {...other}>
 
-      <Stack spacing={3} sx={{ px: 3, pb: 5 }}>
+      <Stack spacing={3} sx={{ px: 3, pb: 16, pt:16 }}>
         {data.map((category) => (
           <Stack key={category.name} spacing={2} direction="row" alignItems="center">
-            <Box sx={{ width: 40, height: 40 }}>{category.icon}</Box>
+            <Box sx={{ width: 40, height: 40}}>{category.icon}</Box>
 
             <ListItemText
               primary={category.name}
@@ -31,8 +29,6 @@ export default function FileStorageOverview({ data, total, ...other }) {
                 color: 'text.disabled',
               }}
             />
-
-            <Box sx={{ typography: 'subtitle2' }}> {fData(category.usedStorage)} </Box>
           </Stack>
         ))}
       </Stack>

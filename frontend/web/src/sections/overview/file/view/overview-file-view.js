@@ -49,7 +49,6 @@ export default function OverviewFileView() {
     } catch (err) {
       console.error('Failed to fetch files:', err);
       setError('Failed to fetch files. Please try again.');
-    } finally {
     }
   }, []);
 
@@ -109,7 +108,6 @@ export default function OverviewFileView() {
       }
     } catch (err) {
       setError('Failed to check analysis results. Please try again.');
-    } finally {
     }
   }, [fetchFiles]);
 
