@@ -17,14 +17,19 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { scanUrl, sendFile, getFiles, getUrlScreenshot, getUrlDomContent, deleteInScanResult ,checkAnalysisResult} from 'src/api/file';
+import {
+  scanUrl,
+  sendFile,
+  getFiles,
+  deleteInScanResult,
+  checkAnalysisResult,
+} from 'src/api/file';
 
 import Iconify from 'src/components/iconify';
 import { UploadBox } from 'src/components/upload';
 import { useSettingsContext } from 'src/components/settings';
 
 import '../styles/overview-file-view.css';
-import FileStorageOverview from '../../../file-manager/file-storage-overview';
 
 const styles = StyleSheet.create({
   page: {
@@ -113,17 +118,32 @@ const FileAnalysisDocument = ({ file }) => (
   </Document>
 );
 
+const getCategoryDescription = (category) => {
+  const descriptions = {
+    phishing: 'Attempts to steal sensitive information',
+    malware: 'Contains or distributes malicious software',
+    spam: 'Unsolicited bulk messages or content',
+    cryptomining: 'Unauthorized use of system resources for cryptocurrency mining',
+    scam: 'Fraudulent scheme to deceive users',
+    malicious: 'Generally harmful or malicious content',
+    adult: 'Adult or mature content',
+    suspicious: 'Potentially harmful but not confirmed',
+    ip: 'Known malicious IP address',
+  };
+  return descriptions[category] || category;
+};
+
 export default function OverviewFileView() {
   const settings = useSettingsContext();
   const [files, setFiles] = useState([]);
-  const [error, setError] = useState(null);
   const [urlToScan, setUrlToScan] = useState('');
   const [scanResult, setScanResult] = useState(null);
-  const [domContent, setDomContent] = useState(null);
-  const [screenshotUrl, setScreenshotUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [screenshotUrl, setScreenshotUrl] = useState(null);
+  const [domContent, setDomContent] = useState(null);
   const aStatRef = useRef(null);
-  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState({ type: null, content: null });
+
   const resetAnalysisStatusMessage = () => {
     if (aStatRef.current) {
       aStatRef.current.textContent = '';
@@ -131,20 +151,13 @@ export default function OverviewFileView() {
   };
 
   const fetchFiles = useCallback(async () => {
-    setError(null);
+    setMessage({ type: null, content: null });
     try {
       const fetchedFiles = await getFiles();
       setFiles(fetchedFiles);
-      const newAnalysisResults = {};
-      fetchedFiles.forEach((file) => {
-        if (file.analysisResult) {
-          newAnalysisResults[file.filename] = file.analysisResult;
-        }
-      });
-      setError(null);
     } catch (err) {
       console.error('Failed to fetch files:', err);
-      setError('Failed to fetch files. Please try again.');
+      setMessage({ type: 'error', content: 'Failed to fetch files. Please try again.' });
     }
   }, []);
 
@@ -157,10 +170,9 @@ export default function OverviewFileView() {
 
   const handleDrop = useCallback(
     async (acceptedFiles) => {
-      setError(null);
+      setMessage({ type: null, content: null });
       setIsLoading(true);
       resetAnalysisStatusMessage();
-      let wasError = false;
       try {
         const uploadPromises = acceptedFiles.map((file) => sendFile(file));
         await Promise.all(uploadPromises);
@@ -168,83 +180,64 @@ export default function OverviewFileView() {
         if (aStatRef.current) {
           aStatRef.current.textContent = 'Analysis is still in progress';
         }
-      } catch (err) {
-        wasError = true;
-        setError('Failed to upload file. Please try again.');
-      } finally {
-        if (aStatRef.current && wasError) {
-          aStatRef.current.textContent = 'Error uploading file !';
-        }
         await wait(1000);
         while (!areFilesFetched) {
-          handleCheckAllAnalysis();
+          await handleCheckAllAnalysis();
           await wait(2000);
         }
-        setIsLoading(false);
         aStatRef.current.textContent = 'Analysis Finished !';
         fetchFiles();
+      } catch (err) {
+        console.error('Error uploading file:', err);
+        setMessage({ type: 'error', content: 'Failed to upload file. Please try again.' });
+      } finally {
+        setIsLoading(false);
       }
     },
     [fetchFiles]
   );
 
   const handleCheckAllAnalysis = useCallback(async () => {
-    setError(null);
-    let resultMessage = '';
     try {
       const result = await checkAnalysisResult();
-      resultMessage = result.message;
       await fetchFiles();
-      if (result?.result) {
-        areFilesFetched = true;
-      } else {
-        areFilesFetched = false;
-      }
+      areFilesFetched = result?.result || false;
     } catch (err) {
-      setError('Failed to check analysis results. Please try again.');
+      console.error('Failed to check analysis results:', err);
     }
   }, [fetchFiles]);
 
-  const removeExtension = (filename) => {
-    const parts = filename.split('.');
-    parts.pop();
-    return parts.join('.');
-  };
-
-  const handleDownload = useCallback(async (file) => {
-    const blob = await pdf(<FileAnalysisDocument file={file} />).toBlob();
-    const fileUrl = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    const fname = removeExtension(file.filename);
-    link.download = `${fname}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(fileUrl);
-  }, []);
-
   const handleUrlScan = async () => {
     setIsLoading(true);
-    setError(null);
+    setMessage({ type: null, content: null });
     setScanResult(null);
     setScreenshotUrl(null);
     setDomContent(null);
-    
     try {
       const result = await scanUrl(urlToScan);
-      setScanResult(result);
-      setSuccess(true);
+      if (result.message === 'URL scanned successfully') {
+        setScanResult(result.result);
 
-      const screenshotUrl = await getUrlScreenshot(result.uuid);
-      setScreenshotUrl(screenshotUrl);
+        const isMalicious = result.result.verdicts.overall.malicious;
+        const {score} = result.result.verdicts.overall;
+        const {categories} = result.result.verdicts.overall;
 
-      const domContent = await getUrlDomContent(result.uuid);
-      setDomContent(domContent);
+        setMessage({
+          type: isMalicious ? 'error' : 'success',
+          content: isMalicious
+            ? `The URL is potentially malicious. Score: ${score}. Categories: ${categories.join(', ')}`
+            : `The URL appears to be safe. Score: ${score}`,
+        });
 
+        setScreenshotUrl(result.result.task.screenshotURL);
+        // On peut aussi récupérer le DOM si nécessaire
+        // setDomContent(result.result.data.dom);
+      } else {
+        throw new Error('Scan failed');
+      }
     } catch (err) {
       console.error('Error scanning URL:', err);
-      setError('Failed to scan URL. Please try again.');
+      setMessage({ type: 'error', content: 'Failed to scan URL. Please try again.' });
     } finally {
       setIsLoading(false);
     }
@@ -253,15 +246,14 @@ export default function OverviewFileView() {
   const handleDelete = useCallback(
     async (fileId) => {
       setIsLoading(true);
-      setError(null);
-      setSuccess(false);
+      setMessage({ type: null, content: null });
       try {
         await deleteInScanResult(fileId);
         await fetchFiles();
-        setSuccess(true);
+        setMessage({ type: 'success', content: 'File deleted successfully' });
       } catch (err) {
         console.error('Error deleting file:', err);
-        setError('Failed to delete file. Please try again.');
+        setMessage({ type: 'error', content: 'Failed to delete file. Please try again.' });
       } finally {
         setIsLoading(false);
       }
@@ -269,17 +261,23 @@ export default function OverviewFileView() {
     [fetchFiles]
   );
 
-  const renderStorageOverview = (
-    <FileStorageOverview
-      data={[
-        {
-          name: 'Files',
-          filesCount: files.length,
-          icon: <Box component="img" src="/assets/icons/files/ic_file.svg" />,
-        },
-      ]}
-    />
-  );
+  const handleDownload = useCallback(async (file) => {
+    try {
+      const blob = await pdf(<FileAnalysisDocument file={file} />).toBlob();
+      const fileUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      const fname = file.filename.split('.').slice(0, -1).join('.');
+      link.download = `${fname}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(fileUrl);
+    } catch (err) {
+      console.error('Error downloading file:', err);
+      setMessage({ type: 'error', content: 'Failed to download file. Please try again.' });
+    }
+  }, []);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
@@ -290,17 +288,6 @@ export default function OverviewFileView() {
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Stack spacing={3}>
-            {scanResult && (
-              <Alert
-                severity={scanResult.result.verdicts.overall.malicious ? 'error' : 'success'}
-                sx={{ mt: 2 }}
-              >
-                {scanResult.result.verdicts.overall.malicious
-                  ? 'The URL is potentially malicious.'
-                  : 'The URL appears to be safe.'}
-              </Alert>
-            )}
-
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -324,6 +311,37 @@ export default function OverviewFileView() {
               </CardContent>
             </Card>
 
+            {message.content && (
+              <Alert severity={message.type} sx={{ mt: 2 }}>
+                {message.content}
+              </Alert>
+            )}
+
+            {scanResult && (
+              <Card sx={{ mt: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Scan Results
+                  </Typography>
+                  <Typography>
+                    Malicious: {scanResult.verdicts.overall.malicious ? 'Yes' : 'No'}
+                  </Typography>
+                  <Typography>Score: {scanResult.verdicts.overall.score}</Typography>
+                  {scanResult.verdicts.overall.categories.length > 0 && (
+                    <Typography>
+                      Categories: {scanResult.verdicts.overall.categories.join(', ')}
+                    </Typography>
+                  )}
+                  {scanResult.verdicts.overall.brands &&
+                    scanResult.verdicts.overall.brands.length > 0 && (
+                      <Typography>
+                        Brands: {scanResult.verdicts.overall.brands.join(', ')}
+                      </Typography>
+                    )}
+                </CardContent>
+              </Card>
+            )}
+
             <UploadBox
               onDrop={handleDrop}
               placeholder={
@@ -339,9 +357,6 @@ export default function OverviewFileView() {
                 borderRadius: 1.5,
               }}
             />
-
-            {error && <Alert severity="error">{error}</Alert>}
-            {success && <Alert severity="success"> File deleted successfully </Alert> ? null : null}
 
             {isLoading && (
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -411,18 +426,25 @@ export default function OverviewFileView() {
                 <img src={screenshotUrl} alt="Site Screenshot" style={{ width: '100%' }} />
               </CardContent>
             </Card>
-          ) : renderStorageOverview}
+          ) : (
+            <Card>
+              <CardContent>
+                <Typography variant="body1">
+                  No screenshot available. Scan a URL to see the site preview.
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
         </Grid>
       </Grid>
+
       {domContent && (
-        <Card sx={{ mt: 5 }}>
+        <Card sx={{ mt: 3 }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
               Site DOM
             </Typography>
-            <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
-              {domContent}
-            </pre>
+            <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{domContent}</pre>
           </CardContent>
         </Card>
       )}
