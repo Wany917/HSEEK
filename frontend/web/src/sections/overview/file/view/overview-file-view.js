@@ -239,7 +239,7 @@ export default function OverviewFileView() {
                       >
                         <Iconify icon="mdi:download" />
                       </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(file.filename)}>
+                      <IconButton aria-label="delete" onClick={() => handleDelete(file.id)}>
                         <Iconify icon="mdi:delete" />
                       </IconButton>
                     </CardActions>
