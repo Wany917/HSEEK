@@ -144,7 +144,11 @@ export default function OverviewFileView() {
       const result = await checkAnalysisResult();
       resultMessage = result.message;
       await fetchFiles();
-      areFilesFetched = true;
+      if (fetchFiles()){
+        areFilesFetched = true;
+      }else{
+        return;
+      }
     } catch (err) {
       setError('Failed to check analysis results. Please try again.');
     } finally {
