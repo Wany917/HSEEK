@@ -308,7 +308,7 @@ export default class FilesController {
 
   async scanUrl({ request, response }: HttpContext) {
     const { url } = request.all()
-    const apiKey = 'c4133788-b03e-4935-91f0-0e9d4dbad4b0'
+    const apiKey = 'a0297a03-4e17-4896-a0bf-224ee6459794'
 
     try {
       const scanResponse = await fetch('https://urlscan.io/api/v1/scan/', {
